@@ -207,7 +207,6 @@
         <div id="layer-panel">
             <div class="layer-panel-title">Map Type</div>
             <div class="layer-grid">
-                <!-- HD RETINA DETECT ENABLED FOR ALL LAYERS -->
                 <div class="layer-item active" id="item-light" onclick="switchLayer('light')">
                     <div class="layer-thumb" style="background-image: url('https://mt1.google.com/vt/lyrs=m&x=13&y=23&z=5');"></div>
                     <span>Default</span>
@@ -303,14 +302,17 @@
     <script>
         const WEATHER_API_KEY = "b91ed340d9e7869a4d0859f4ef892483"; 
         
-        const map = L.map('map', { zoomControl: false, minZoom: 3, maxBounds: [[-90, -180], [90, 180]] }).setView([22, 79], 4);
+        // maxZoom: 22 ALLOWS EXTREME ZOOM IN LEAFLET
+        const map = L.map('map', { zoomControl: false, minZoom: 3, maxZoom: 22, maxBounds: [[-90, -180], [90, 180]] }).setView([22, 79], 4);
         L.control.zoom({ position: 'topleft' }).addTo(map);
         L.control.scale({ position: 'bottomleft', imperial: false }).addTo(map);
         
-        // ADDED detectRetina: true FOR HD MAPS ON MOBILES/HIGH-RES SCREENS
-        const lightLayer = L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', { maxZoom: 20, detectRetina: true, attribution: '&copy; Google Maps' });
-        const hybridSatLayer = L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', { maxZoom: 20, detectRetina: true, attribution: '&copy; Google Maps' });
-        const premiumDarkLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { maxZoom: 20, detectRetina: true, attribution: '&copy; CARTO' });
+        // scale=2 FETCHES HD 512px GOOGLE TILES. maxNativeZoom PREVENTS MISSING TILES ON DEEP ZOOM.
+        const lightLayer = L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}&scale=2', { maxZoom: 22, maxNativeZoom: 20, attribution: '&copy; Google Maps' });
+        const hybridSatLayer = L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}&scale=2', { maxZoom: 22, maxNativeZoom: 20, attribution: '&copy; Google Maps' });
+        
+        // CARTO dark map doesn't use scale=2, so we use detectRetina: true for HD
+        const premiumDarkLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { maxZoom: 22, maxNativeZoom: 19, detectRetina: true, attribution: '&copy; CARTO' });
 
         const rainRadar = L.tileLayer(`https://tile.openweathermap.org/map/precipitation_new/{z}/{x}/{y}.png?appid=${WEATHER_API_KEY}`, { opacity: 0.7 });
         const cloudRadar = L.tileLayer(`https://tile.openweathermap.org/map/clouds_new/{z}/{x}/{y}.png?appid=${WEATHER_API_KEY}`, { opacity: 0.7 });
@@ -532,7 +534,7 @@
         }
 
         function triggerLocation(lat, lon, inputEl) {
-            map.flyTo([lat, lon], 12, { animate: true, duration: 1.5 });
+            map.flyTo([lat, lon], 14, { animate: true, duration: 1.5 });
             fetchBackendData(lat, lon);
             inputEl.placeholder = "Search any city or village...";
             inputEl.value = ""; 
@@ -550,7 +552,7 @@
                 navigator.geolocation.getCurrentPosition(
                     (position) => {
                         const lat = position.coords.latitude; const lon = position.coords.longitude;
-                        map.flyTo([lat, lon], 12, { animate: true, duration: 2.5 }); fetchBackendData(lat, lon);
+                        map.flyTo([lat, lon], 14, { animate: true, duration: 2.5 }); fetchBackendData(lat, lon);
                     },
                     (error) => { 
                         map.flyTo([28.6139, 77.2090], 10, { animate: true, duration: 1.5 }); fetchBackendData(28.6139, 77.2090); 
@@ -566,7 +568,7 @@
                 navigator.geolocation.getCurrentPosition(
                     (position) => {
                         const lat = position.coords.latitude; const lon = position.coords.longitude;
-                        map.flyTo([lat, lon], 12, { animate: true, duration: 1.5 }); fetchBackendData(lat, lon);
+                        map.flyTo([lat, lon], 14, { animate: true, duration: 1.5 }); fetchBackendData(lat, lon);
                         searchInput.placeholder = "Search any city or village...";
                     },
                     (error) => { searchInput.placeholder = "❌ GPS Denied!"; setTimeout(() => searchInput.placeholder = "Search any city or village...", 3000); }
