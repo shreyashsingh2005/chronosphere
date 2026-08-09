@@ -51,9 +51,7 @@
         .gps-btn:hover { background: #e5e7eb; color: #1d4ed8; transform: scale(1.05); }
 
         /* GOOGLE MAPS STYLE VISUAL LAYER CONTROLS */
-        #layer-controls-wrapper {
-            position: absolute; bottom: 25px; left: 20px; z-index: 1000;
-        }
+        #layer-controls-wrapper { position: absolute; bottom: 25px; left: 20px; z-index: 1000; }
         .main-layer-btn {
             background: rgba(255, 255, 255, 0.95); border: 1px solid rgba(255,255,255,0.8);
             border-radius: 50%; width: 48px; height: 48px; 
@@ -69,14 +67,12 @@
             padding: 16px; border-radius: 20px; box-shadow: 0 15px 40px rgba(0,0,0,0.15);
             border: 1px solid rgba(255,255,255,0.8); width: 280px;
             opacity: 0; pointer-events: none; transform: translateX(-15px) scale(0.95);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            transform-origin: left bottom;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); transform-origin: left bottom;
         }
         #layer-panel.show { opacity: 1; pointer-events: auto; transform: translateX(0) scale(1); }
         
         .layer-panel-title { font-size: 0.75em; font-weight: 800; color: #111827; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px; }
         .layer-grid { display: flex; gap: 10px; justify-content: space-between; margin-bottom: 15px; }
-        
         .layer-item { display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer; flex: 1; }
         .layer-thumb { 
             width: 100%; aspect-ratio: 1; border-radius: 14px; background-size: cover; background-position: center;
@@ -86,7 +82,6 @@
         .layer-item span { font-size: 0.7em; font-weight: 700; color: #6b7280; transition: color 0.2s; }
         .layer-item.active span { color: #2563eb; }
 
-        /* Live Radar Toggles */
         .radar-controls { border-top: 1px solid #e5e7eb; padding-top: 12px; display: flex; flex-direction: column; gap: 8px; }
         .radar-toggle { display: flex; justify-content: space-between; align-items: center; font-size: 0.8em; font-weight: 700; color: #374151; cursor: pointer; }
         .toggle-switch { width: 36px; height: 20px; background: #d1d5db; border-radius: 20px; position: relative; transition: 0.3s; }
@@ -99,15 +94,12 @@
             position: fixed; bottom: 20px; right: 20px; width: 310px; z-index: 1000;
             background: rgba(255, 255, 255, 0.94); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
             border: 1px solid rgba(255, 255, 255, 1); border-radius: 18px; padding: 18px 20px; 
-            box-shadow: 0 15px 40px rgba(0,0,0,0.12);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.12); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .hud-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; cursor: pointer; }
         .section-title { font-size: 0.65em; color: #2563eb; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; margin: 0; display: flex; align-items: center; gap: 8px; flex: 1; }
         .section-title::after { content: ""; flex: 1; height: 1.5px; background: #e5e7eb; border-radius: 2px; margin-left: 8px; }
-        
         .min-summary { display: none; font-size: 0.8em; font-weight: 700; color: #111827; align-items: center; gap: 8px; }
-        
         .minimize-btn { background: #f3f4f6; border: none; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-size: 0.7em; cursor: pointer; color: #2563eb; font-weight: bold; transition: background 0.2s; }
         .minimize-btn:hover { background: #e5e7eb; }
 
@@ -132,16 +124,6 @@
         #data-hud.collapsed .min-summary { display: flex; }
         #data-hud.collapsed { padding: 10px 16px; width: auto; max-width: 240px; }
 
-        /* Dynamic Pulses */
-        .pulse-marker-hot { width: 16px; height: 16px; border-radius: 50%; border: 2.5px solid #fff; background: #ef4444; animation: pulseHot 1.5s infinite; }
-        @keyframes pulseHot { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
-        
-        .pulse-marker-rain { width: 16px; height: 16px; border-radius: 50%; border: 2.5px solid #fff; background: #3b82f6; animation: pulseRain 1.5s infinite; }
-        @keyframes pulseRain { 0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(59, 130, 246, 0); } 100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); } }
-        
-        .pulse-marker-cold { width: 16px; height: 16px; border-radius: 50%; border: 2.5px solid #fff; background: #06b6d4; animation: pulseCold 1.5s infinite; }
-        @keyframes pulseCold { 0% { box-shadow: 0 0 0 0 rgba(6, 182, 212, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(6, 182, 212, 0); } 100% { box-shadow: 0 0 0 0 rgba(6, 182, 212, 0); } }
-        
         .pulse-marker-pleasant { width: 16px; height: 16px; border-radius: 50%; border: 2.5px solid #fff; background: #10b981; animation: pulsePleasant 1.5s infinite; }
         @keyframes pulsePleasant { 0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(16, 185, 129, 0); } 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); } }
 
@@ -170,10 +152,7 @@
             .main-layer-btn svg { width: 20px; height: 20px; }
             #layer-panel { top: 0; left: 50px; bottom: auto; width: 240px; padding: 14px; transform-origin: left top; transform: translateX(-15px) scale(0.95); }
             
-            #data-hud { 
-                bottom: 12px; right: 12px; left: 12px; width: auto; 
-                max-height: 38dvh; overflow-y: auto; padding: 14px; border-radius: 16px; 
-            }
+            #data-hud { bottom: 12px; right: 12px; left: 12px; width: auto; max-height: 40dvh; overflow-y: auto; padding: 14px; border-radius: 16px; }
             .weather-display { margin-bottom: 8px; padding-bottom: 8px; }
             #w-icon { font-size: 2em; }
             #w-temp { font-size: 1.4em; }
@@ -318,7 +297,6 @@
         const cloudRadar = L.tileLayer(`https://tile.openweathermap.org/map/clouds_new/{z}/{x}/{y}.png?appid=${WEATHER_API_KEY}`, { opacity: 0.7 });
 
         lightLayer.addTo(map);
-        
         let activeRadar = { rain: false, clouds: false };
 
         function toggleLayers() { document.getElementById('layer-panel').classList.toggle('show'); }
@@ -326,7 +304,6 @@
 
         function switchLayer(layerType) {
             map.removeLayer(lightLayer); map.removeLayer(premiumDarkLayer); map.removeLayer(hybridSatLayer);
-            
             document.getElementById('item-light').classList.remove('active'); 
             document.getElementById('item-dark').classList.remove('active'); 
             document.getElementById('item-sat').classList.remove('active');
@@ -366,19 +343,13 @@
         }
 
         function getWeatherVisuals(desc, temp) {
-            let icon = '🌡️'; let markerClass = 'pulse-marker-pleasant';
-            if (desc.includes('thunder') || desc.includes('storm')) { icon = '⛈️'; markerClass = 'pulse-marker-rain'; }
-            else if (desc.includes('rain') || desc.includes('drizzle')) { icon = '🌧️'; markerClass = 'pulse-marker-rain'; }
-            else if (desc.includes('snow')) { icon = '❄️'; markerClass = 'pulse-marker-cold'; }
-            else {
-                if (desc.includes('clear') || desc.includes('sun')) icon = '☀️';
-                else if (desc.includes('cloud')) icon = '☁️';
-                else if (desc.includes('mist') || desc.includes('fog') || desc.includes('haze') || desc.includes('smoke')) icon = '🌫️';
-                
-                if (temp >= 35) { markerClass = 'pulse-marker-hot'; } 
-                else if (temp <= 10) { markerClass = 'pulse-marker-cold'; }
-            }
-            return { icon, markerClass };
+            let icon = '☀️'; 
+            if (desc.includes('thunder') || desc.includes('storm')) icon = '⛈️'; 
+            else if (desc.includes('rain') || desc.includes('drizzle')) icon = '🌧️'; 
+            else if (desc.includes('snow')) icon = '❄️'; 
+            else if (desc.includes('cloud')) icon = '☁️';
+            else if (desc.includes('mist') || desc.includes('fog') || desc.includes('haze') || desc.includes('smoke')) icon = '🌫️';
+            return { icon, markerClass: 'pulse-marker-pleasant' };
         }
 
         function getExactLocalTimeStr(serverTimeSec, offsetSec) {
@@ -392,8 +363,6 @@
             expandHud();
             document.getElementById('weather-section').style.opacity = '0.5';
             document.getElementById('time-section').style.opacity = '0.5';
-            document.getElementById('w-icon').innerText = "⏳";
-            document.getElementById('w-rain-chance').innerText = "--%";
             
             fetch(`/api/data?lat=${lat}&lon=${lon}`)
                 .then(res => res.json())
@@ -426,7 +395,7 @@
                         document.getElementById('t-date').innerText = accurateTime.tDate;
                         document.getElementById('t-time').innerText = accurateTime.tTime;
 
-                        // Reverse Geocode for accurate place names
+                        // Reverse Geocode
                         fetch(`https://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lon}&limit=1&appid=${WEATHER_API_KEY}`)
                             .then(geoRes => geoRes.json())
                             .then(geoData => {
@@ -450,54 +419,64 @@
                                 currentPin = L.marker([lat, lon], {icon: customPinIcon}).bindPopup(popupContent, { closeButton: false, offset: [0, -10], autoPan: false }).addTo(map);
                             });
 
-                        // Forecast API for exact Rain Chance
+                        // Rain Chance Forecast
                         fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&cnt=2&appid=${WEATHER_API_KEY}`)
                             .then(fRes => fRes.json())
                             .then(fData => {
                                 if (fData && fData.list && fData.list.length > 0) {
                                     const rainChancePercent = Math.round(fData.list[0].pop * 100);
                                     document.getElementById('w-rain-chance').innerText = rainChancePercent + "%";
-                                } else {
-                                    document.getElementById('w-rain-chance').innerText = "0%";
-                                }
+                                } else { document.getElementById('w-rain-chance').innerText = "0%"; }
                             }).catch(() => document.getElementById('w-rain-chance').innerText = "--%");
                     }
-                })
-                .catch(err => console.error("Error:", err));
+                }).catch(err => console.error(err));
         }
 
-        // SMART DUAL-ENGINE SEARCH
+        map.on('click', function(e) { fetchBackendData(e.latlng.lat, e.latlng.lng); closeLayers(); });
+
+        // GOOGLE-LEVEL SMART SEARCH FUNCTION (Auto-Typos & Location Fallback)
         function searchCity() {
             const searchInput = document.getElementById('searchInput');
-            const query = searchInput.value.trim();
+            let query = searchInput.value.trim();
             if (!query) return;
-            searchInput.placeholder = "Scanning Database...";
+            searchInput.placeholder = "Scanning Matrix...";
             
-            // Engine 1: OpenWeather (Best for Cities, States, Countries)
+            // Auto-correct common typos logic
+            query = query.replace(/hariyana/gi, 'haryana');
+            query = query.replace(/khord/gi, 'khurd');
+
+            // Attempt 1: OpenWeather (Best for Cities/States)
             fetch(`https://api.openweathermap.org/geo/1.0/direct?q=${encodeURIComponent(query)}&limit=1&appid=${WEATHER_API_KEY}`)
                 .then(res => res.json())
                 .then(data => {
                     if (data && data.length > 0) {
-                        triggerLocation(data[0].lat, data[0].lon);
+                        triggerLocation(data[0].lat, data[0].lon, searchInput);
                     } else {
-                        // Engine 2: OpenStreetMap Fallback (Best for Villages like Noida Khord & Typos)
+                        // Attempt 2: OpenStreetMap Strict (Best for local areas & villages)
                         fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=1`)
                             .then(osmRes => osmRes.json())
                             .then(osmData => {
                                 if (osmData && osmData.length > 0) {
-                                    triggerLocation(parseFloat(osmData[0].lat), parseFloat(osmData[0].lon));
+                                    triggerLocation(parseFloat(osmData[0].lat), parseFloat(osmData[0].lon), searchInput);
                                 } else {
-                                    searchInput.value = ""; 
-                                    searchInput.placeholder = "❌ Target not found!";
-                                    setTimeout(() => searchInput.placeholder = "Search city or village...", 3000);
+                                    // Attempt 3: Smart Fallback (Forcing India context to prevent mapping to Africa/Japan)
+                                    let fallbackQuery = query + ", India";
+                                    fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(fallbackQuery)}&limit=1`)
+                                        .then(fbRes => fbRes.json())
+                                        .then(fbData => {
+                                            if (fbData && fbData.length > 0) {
+                                                triggerLocation(parseFloat(fbData[0].lat), parseFloat(fbData[0].lon), searchInput);
+                                            } else {
+                                                showError(searchInput);
+                                            }
+                                        }).catch(() => showError(searchInput));
                                 }
                             }).catch(() => showError(searchInput));
                     }
                 }).catch(() => showError(searchInput));
         }
 
-        function triggerLocation(lat, lon) {
-            const searchInput = document.getElementById('searchInput');
+        function triggerLocation(lat, lon, searchInput) {
             map.flyTo([lat, lon], 12, { animate: true, duration: 1.5 });
             fetchBackendData(lat, lon);
             searchInput.placeholder = "Search city or village...";
@@ -507,14 +486,11 @@
 
         function showError(input) {
             input.value = ""; 
-            input.placeholder = "❌ Network Error!";
+            input.placeholder = "❌ Location not found!";
             setTimeout(() => input.placeholder = "Search city or village...", 3000);
         }
 
-        map.on('click', function(e) { fetchBackendData(e.latlng.lat, e.latlng.lng); closeLayers(); });
-
         window.onload = () => {
-            const searchInput = document.getElementById('searchInput');
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
                     (position) => {
