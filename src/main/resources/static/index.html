@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChronoSphere</title>
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <style>
+        /* Base Setup */
+        body {
+            margin: 0; padding: 0;
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+            background-color: #000; 
+            overflow: hidden; color: #1a1a1a;
+        }
+        
+        #map { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 1; }
+        
+        /* SLEEK PREMIUM BRANDING (Glass Pill Style) */
+        #brand { 
+            position: absolute; top: 25px; left: 25px; z-index: 1000; pointer-events: none; 
+            background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            padding: 10px 20px; border-radius: 16px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            border: 1px solid rgba(255,255,255,0.7);
+            display: flex; flex-direction: column; align-items: flex-start;
+        }
+        #brand h1 { margin: 0; font-size: 1.25em; font-weight: 800; letter-spacing: 1px; color: #111827; }
+        #brand h1 span { color: #2563eb; }
+        #brand p { margin: 2px 0 0 0px; font-size: 0.6em; color: #4b5563; letter-spacing: 2px; text-transform: uppercase; font-weight: 800; }
+
+        /* Search Widget */
+        #search-widget {
+            position: absolute; top: 25px; left: 50%; transform: translateX(-50%); z-index: 1000;
+            display: flex; align-items: center;
+            background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(0, 0, 0, 0.08); border-radius: 50px; padding: 6px 6px 6px 20px;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.12); transition: all 0.3s;
+        }
+        #search-widget input { background: transparent; border: none; color: #111827; width: 260px; font-size: 0.95em; font-weight: 600; outline: none; }
+        #search-widget input::placeholder { color: #9ca3af; font-weight: 500; }
+        
+        .action-btn { background: #2563eb; color: #fff; border: none; border-radius: 40px; padding: 10px 24px; font-weight: bold; font-size: 0.85em; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; transition: all 0.3s; margin-left: 10px; box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3); }
+        .action-btn:hover { background: #1d4ed8; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4); }
+        
+        .gps-btn { background: #f3f4f6; color: #2563eb; border: 1px solid #e5e7eb; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; font-size: 1.1em; cursor: pointer; transition: all 0.3s; margin-right: 5px; }
+        .gps-btn:hover { background: #e5e7eb; color: #1d4ed8; transform: scale(1.05); }
+
+        /* Mac OS Dock Style Layer Controls */
+        #layer-controls {
+            position: absolute; bottom: 35px; left: 25px; z-index: 1000;
+            display: flex; flex-direction: column; gap: 10px;
+            background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(20px);
+            padding: 10px; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.12);
+            border: 1px solid rgba(255,255,255,0.5);
+        }
+        .layer-btn {
+            background: transparent; border: none; border-radius: 12px;
+            width: 45px; height: 45px; display: flex; align-items: center; justify-content: center;
+            font-size: 1.3em; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            filter: grayscale(100%); opacity: 0.6;
+        }
+        .layer-btn:hover { background: rgba(0,0,0,0.05); filter: grayscale(0%); opacity: 1; transform: scale(1.1); }
+        .layer-btn.active { background: #fff; filter: grayscale(0%); opacity: 1; box-shadow: 0 5px 15px rgba(0,0,0,0.1); transform: scale(1.05); }
+
+        /* Premium Glass HUD */
+        #data-hud {
+            position: absolute; bottom: 35px; right: 35px; width: 330px; z-index: 1000;
+            background: rgba(255, 255, 255, 0.92); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
+            border: 1px solid rgba(255, 255, 255, 1); border-radius: 24px; padding: 30px 25px; 
+            box-shadow: 0 20px 50px rgba(0,0,0,0.12), inset 0 0 0 1px rgba(255,255,255,0.5);
+        }
+        .hud-section { margin-bottom: 25px; transition: opacity 0.3s ease; }
+        .hud-section:last-child { margin-bottom: 0; }
+        
+        .section-title { font-size: 0.75em; color: #2563eb; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
+        .section-title::after { content: ""; flex: 1; height: 1.5px; background: #e5e7eb; border-radius: 2px; }
+        
+        .weather-display { display: flex; align-items: center; gap: 20px; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid #e5e7eb; }
+        #w-icon { font-size: 3.2em; line-height: 1; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.15)); }
+        .temp-info { display: flex; flex-direction: column; }
+        #w-temp { font-size: 2.2em; font-weight: 800; color: #111827; line-height: 1; margin-bottom: 4px; }
+        #w-cond { font-size: 1.05em; color: #4b5563; font-weight: 600; }
+        
+        .data-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .data-item span { display: block; font-size: 0.7em; color: #6b7280; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; font-weight: 700; }
+        .data-item strong { display: block; font-size: 1.05em; font-weight: 700; color: #1f2937; }
+        
+        /* Smart Pins */
+        .pulse-marker-hot { width: 14px; height: 14px; border-radius: 50%; border: 2.5px solid #fff; background: #ef4444; animation: pulseHot 1.5s infinite; }
+        @keyframes pulseHot { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
+        
+        .pulse-marker-rain { width: 14px; height: 14px; border-radius: 50%; border: 2.5px solid #fff; background: #3b82f6; animation: pulseRain 1.5s infinite; }
+        @keyframes pulseRain { 0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(59, 130, 246, 0); } 100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); } }
+        
+        .pulse-marker-cold { width: 14px; height: 14px; border-radius: 50%; border: 2.5px solid #fff; background: #06b6d4; animation: pulseCold 1.5s infinite; }
+        @keyframes pulseCold { 0% { box-shadow: 0 0 0 0 rgba(6, 182, 212, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(6, 182, 212, 0); } 100% { box-shadow: 0 0 0 0 rgba(6, 182, 212, 0); } }
+        
+        .pulse-marker-pleasant { width: 14px; height: 14px; border-radius: 50%; border: 2.5px solid #fff; background: #10b981; animation: pulsePleasant 1.5s infinite; }
+        @keyframes pulsePleasant { 0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(16, 185, 129, 0); } 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); } }
+
+        /* Floating Popup */
+        .leaflet-popup-content-wrapper { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); padding: 2px; }
+        .leaflet-popup-tip { background: rgba(255, 255, 255, 0.95); }
+        .custom-popup-content { font-family: 'Segoe UI', sans-serif; font-size: 0.95em; font-weight: 700; color: #111827; padding: 5px 10px; display: flex; align-items: center; gap: 8px; }
+
+        .leaflet-control-zoom { border: none !important; margin-left: 25px !important; margin-bottom: 20px !important; box-shadow: 0 8px 25px rgba(0,0,0,0.1) !important; }
+        .leaflet-control-zoom a { background-color: rgba(255, 255, 255, 0.95) !important; color: #111 !important; border-color: rgba(0,0,0,0.05) !important; width: 35px !important; height: 35px !important; line-height: 35px !important; }
+    </style>
+</head>
+<body>
+
+    <div id="map"></div>
+    
+    <!-- Updated Branding: Small, Premium, Clear -->
+    <div id="brand">
+        <h1>Chr<span>⚛</span>noSphere</h1>
+        <p>Command Center</p>
+    </div>
+
+    <!-- Layer Controls -->
+    <div id="layer-controls">
+        <button class="layer-btn" id="btn-sat" onclick="switchLayer('sat')" title="Hybrid Satellite View">🛰️</button>
+        <button class="layer-btn active" id="btn-light" onclick="switchLayer('light')" title="Light Map">🗺️</button>
+        <button class="layer-btn" id="btn-dark" onclick="switchLayer('dark')" title="Premium Dark Mode">🌙</button>
+    </div>
+
+    <div id="search-widget">
+        <input type="text" id="searchInput" placeholder="Initializing uplink..." onkeypress="handleEnter(event)">
+        <button class="gps-btn" onclick="locateMe()" title="GPS Auto-Locate">📍</button>
+        <button class="action-btn" onclick="searchCity()">Scan</button>
+    </div>
+
+    <div id="data-hud">
+        <div class="hud-section" id="weather-section">
+            <div class="section-title">Atmospheric Data</div>
+            <div class="weather-display">
+                <div id="w-icon">🌍</div>
+                <div class="temp-info">
+                    <span id="w-temp">--°C</span>
+                    <span id="w-cond">Awaiting data...</span>
+                </div>
+            </div>
+            <div class="data-grid">
+                <div class="data-item">
+                    <span>Location</span>
+                    <strong id="w-loc">--</strong>
+                </div>
+                <div class="data-item">
+                    <span>Humidity</span>
+                    <strong id="w-hum">--</strong>
+                </div>
+            </div>
+        </div>
+        <div class="hud-section" id="time-section">
+            <div class="section-title">Temporal Sync</div>
+            <div class="data-grid">
+                <div class="data-item">
+                    <span>Local Time</span>
+                    <strong id="t-time">--</strong>
+                </div>
+                <div class="data-item">
+                    <span>Date</span>
+                    <strong id="t-date">--</strong>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        // Start Map zoomed out focusing roughly on India by default
+        const map = L.map('map', { zoomControl: false, minZoom: 2, maxBounds: [[-90, -180], [90, 180]] }).setView([22, 79], 4);
+        L.control.zoom({ position: 'bottomleft' }).addTo(map);
+        
+        // MAP LAYERS 
+        const lightLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', { attribution: '&copy; CARTO' });
+        const darkBase = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}', { attribution: '&copy; Esri' });
+        const darkLabels = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}', { attribution: '&copy; Esri' });
+        const premiumDarkLayer = L.layerGroup([darkBase, darkLabels]);
+        const satImage = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { attribution: 'Tiles &copy; Esri' });
+        const satLabels = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}{r}.png', { attribution: '&copy; CARTO' });
+        const hybridSatLayer = L.layerGroup([satImage, satLabels]); 
+
+        lightLayer.addTo(map); // Default
+        
+        function switchLayer(layerType) {
+            map.removeLayer(lightLayer); map.removeLayer(premiumDarkLayer); map.removeLayer(hybridSatLayer);
+            document.getElementById('btn-light').classList.remove('active'); document.getElementById('btn-dark').classList.remove('active'); document.getElementById('btn-sat').classList.remove('active');
+
+            if (layerType === 'light') { lightLayer.addTo(map); document.getElementById('btn-light').classList.add('active'); }
+            if (layerType === 'dark') { premiumDarkLayer.addTo(map); document.getElementById('btn-dark').classList.add('active'); }
+            if (layerType === 'sat') { hybridSatLayer.addTo(map); document.getElementById('btn-sat').classList.add('active'); }
+            
+            if(currentPin) { map.removeLayer(currentPin); currentPin.addTo(map); }
+        }
+
+        let currentPin = null;
+
+        function getWeatherVisuals(desc, temp) {
+            let icon = '🌡️'; let markerClass = 'pulse-marker-pleasant';
+            if (desc.includes('thunder') || desc.includes('storm')) { icon = '⛈️'; markerClass = 'pulse-marker-rain'; }
+            else if (desc.includes('rain') || desc.includes('drizzle')) { icon = '🌧️'; markerClass = 'pulse-marker-rain'; }
+            else if (desc.includes('snow')) { icon = '❄️'; markerClass = 'pulse-marker-cold'; }
+            else {
+                if (desc.includes('clear') || desc.includes('sun')) icon = '☀️';
+                else if (desc.includes('cloud')) icon = '☁️';
+                else if (desc.includes('mist') || desc.includes('fog') || desc.includes('haze') || desc.includes('smoke')) icon = '🌫️';
+                
+                if (temp >= 35) { markerClass = 'pulse-marker-hot'; } 
+                else if (temp <= 10) { markerClass = 'pulse-marker-cold'; }
+            }
+            return { icon, markerClass };
+        }
+
+        function fetchBackendData(lat, lon) {
+            document.getElementById('weather-section').style.opacity = '0.5';
+            document.getElementById('time-section').style.opacity = '0.5';
+            document.getElementById('w-icon').innerText = "⏳";
+            
+            fetch(`http://localhost:9090/api/data?lat=${lat}&lon=${lon}`)
+                .then(res => res.json())
+                .then(data => {
+                    document.getElementById('weather-section').style.opacity = '1';
+                    document.getElementById('time-section').style.opacity = '1';
+
+                    let locName = "UNKNOWN AREA";
+                    if (data.weather && data.weather.name) {
+                        let cityName = data.weather.name;
+                        let countryName = "";
+                        if (data.weather.sys && data.weather.sys.country) {
+                            try {
+                                const regionNames = new Intl.DisplayNames(['en'], {type: 'region'});
+                                countryName = ", " + regionNames.of(data.weather.sys.country);
+                            } catch (e) {
+                                countryName = ", " + data.weather.sys.country;
+                            }
+                        }
+                        locName = cityName + countryName;
+                    }
+                    
+                    document.getElementById('w-loc').innerText = locName;
+
+                    if (data.weather && data.weather.weather) {
+                        const temp = Math.round(data.weather.main.temp);
+                        const desc = data.weather.weather[0].description.toLowerCase();
+                        const visuals = getWeatherVisuals(desc, temp);
+
+                        document.getElementById('w-temp').innerText = temp + "°C";
+                        document.getElementById('w-cond').innerText = desc.replace(/\b\w/g, l => l.toUpperCase());
+                        document.getElementById('w-hum').innerText = data.weather.main.humidity + "%";
+                        document.getElementById('w-icon').innerText = visuals.icon;
+
+                        if (currentPin) map.removeLayer(currentPin);
+                        const customPinIcon = L.divIcon({ className: visuals.markerClass, iconSize: [14, 14], iconAnchor: [7, 7] });
+                        
+                        const popupContent = `<div class="custom-popup-content">${visuals.icon} <span>${locName} • ${temp}°C</span></div>`;
+                        
+                        currentPin = L.marker([lat, lon], {icon: customPinIcon})
+                            .bindPopup(popupContent, { closeButton: false, offset: [0, -10], autoPanPadding: [50, 50] })
+                            .addTo(map)
+                            .openPopup();
+                    }
+                    
+                    if (data.time && data.time.dateTime) {
+                        const dateObj = new Date(data.time.dateTime);
+                        document.getElementById('t-date').innerText = dateObj.toLocaleDateString('en-IN', { month: 'short', day: 'numeric', year: 'numeric' });
+                        document.getElementById('t-time').innerText = dateObj.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true });
+                    }
+                })
+                .catch(err => console.error("Error:", err));
+        }
+
+        map.on('click', function(e) { fetchBackendData(e.latlng.lat, e.latlng.lng); });
+
+        function searchCity() {
+            const searchInput = document.getElementById('searchInput');
+            const query = searchInput.value.trim();
+            if (!query) return;
+            searchInput.placeholder = "Scanning database...";
+            fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${query}`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.length > 0) {
+                        const lat = parseFloat(data[0].lat); const lon = parseFloat(data[0].lon);
+                        map.flyTo([lat, lon], 10, { animate: true, duration: 1.5 });
+                        fetchBackendData(lat, lon);
+                        searchInput.placeholder = "Search coordinates or city...";
+                        searchInput.value = ""; 
+                    } else {
+                        searchInput.value = ""; searchInput.placeholder = "❌ Target not found!";
+                        setTimeout(() => searchInput.placeholder = "Search coordinates or city...", 3000);
+                    }
+                }).catch(err => console.error(err));
+        }
+
+        // --- NEW: AUTO-LOCATE ON PAGE LOAD ---
+        window.onload = () => {
+            const searchInput = document.getElementById('searchInput');
+            
+            // Ask browser for location
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        // Success: Fly to live location
+                        const lat = position.coords.latitude; 
+                        const lon = position.coords.longitude;
+                        map.flyTo([lat, lon], 12, { animate: true, duration: 2.5 });
+                        fetchBackendData(lat, lon);
+                        searchInput.placeholder = "Search coordinates or city...";
+                    },
+                    (error) => { 
+                        // Denied/Failed: Fallback to Central India
+                        console.log("Location access denied or failed.");
+                        map.flyTo([22.5, 79.0], 5, { animate: true, duration: 1.5 });
+                        fetchBackendData(28.6139, 77.2090); // Default data fetch (Delhi) if location is off
+                        searchInput.placeholder = "Search coordinates or city..."; 
+                    }
+                );
+            } else {
+                searchInput.placeholder = "Search coordinates or city...";
+            }
+        };
+
+        // Manual GPS button logic
+        function locateMe() {
+            const searchInput = document.getElementById('searchInput');
+            searchInput.value = ""; searchInput.placeholder = "Acquiring satellite lock... 🛰️";
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const lat = position.coords.latitude; const lon = position.coords.longitude;
+                        map.flyTo([lat, lon], 12, { animate: true, duration: 1.5 });
+                        fetchBackendData(lat, lon);
+                        searchInput.placeholder = "Search coordinates or city...";
+                    },
+                    (error) => { searchInput.placeholder = "❌ Location denied!"; setTimeout(() => searchInput.placeholder = "Search coordinates or city...", 3000); }
+                );
+            }
+        }
+
+        function handleEnter(event) { if (event.key === 'Enter') searchCity(); }
+    </script>
+</body>
+</html>
