@@ -2,14 +2,17 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Yeh line Safari/iOS ke auto-zoom ko permanently block kar degi -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ChronoSphere - Global Intelligence</title>
     
     <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     
     <style>
-        /* Base Setup - Using 100dvh for perfect mobile sizing */
+        /* Base Setup - Added box-sizing to fix ALL overflow issues */
+        * { box-sizing: border-box; }
+        
         body {
             margin: 0; padding: 0;
             font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
@@ -36,20 +39,20 @@
             position: absolute; top: 54px; left: 50%; transform: translateX(-50%); z-index: 1000;
             display: flex; align-items: center;
             background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
-            border: 1px solid rgba(37, 99, 235, 0.2); border-radius: 50px; padding: 3px 3px 3px 14px;
+            border: 1px solid rgba(37, 99, 235, 0.2); border-radius: 50px; padding: 4px 6px 4px 16px;
             box-shadow: 0 8px 25px rgba(37, 99, 235, 0.12); transition: all 0.3s ease;
         }
         #search-widget:hover, #search-widget:focus-within {
             border-color: #2563eb;
             box-shadow: 0 10px 30px rgba(37, 99, 235, 0.2);
         }
-        #search-widget input { background: transparent; border: none; color: #111827; width: 180px; font-size: 0.8em; font-weight: 600; outline: none; }
+        #search-widget input { background: transparent; border: none; color: #111827; width: 180px; font-size: 0.85em; font-weight: 600; outline: none; }
         #search-widget input::placeholder { color: #9ca3af; font-weight: 500; }
         
-        .action-btn { background: #2563eb; color: #fff; border: none; border-radius: 40px; padding: 6px 14px; font-weight: bold; font-size: 0.7em; text-transform: uppercase; letter-spacing: 0.8px; cursor: pointer; transition: all 0.3s; margin-left: 5px; box-shadow: 0 3px 12px rgba(37, 99, 235, 0.3); }
+        .action-btn { background: #2563eb; color: #fff; border: none; border-radius: 40px; padding: 6px 16px; font-weight: bold; font-size: 0.75em; text-transform: uppercase; letter-spacing: 0.8px; cursor: pointer; transition: all 0.3s; margin-left: 5px; box-shadow: 0 3px 12px rgba(37, 99, 235, 0.3); }
         .action-btn:hover { background: #1d4ed8; transform: translateY(-1px); box-shadow: 0 5px 15px rgba(37, 99, 235, 0.4); }
         
-        .gps-btn { background: #f3f4f6; color: #2563eb; border: 1px solid #e5e7eb; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-size: 0.85em; cursor: pointer; transition: all 0.3s; margin-right: 3px; }
+        .gps-btn { background: #f3f4f6; color: #2563eb; border: 1px solid #e5e7eb; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; font-size: 0.85em; cursor: pointer; transition: all 0.3s; margin-right: 3px; }
         .gps-btn:hover { background: #e5e7eb; color: #1d4ed8; transform: scale(1.05); }
 
         /* Mac OS Dock Style Layer Controls */
@@ -126,39 +129,51 @@
         .leaflet-control-zoom { border: none !important; margin-left: 20px !important; margin-bottom: 25px !important; box-shadow: 0 8px 25px rgba(0,0,0,0.1) !important; }
         .leaflet-control-zoom a { background-color: rgba(255, 255, 255, 0.95) !important; color: #111 !important; border-color: rgba(0,0,0,0.05) !important; width: 32px !important; height: 32px !important; line-height: 32px !important; }
 
-        /* --- STABLE MOBILE RESPONSIVE FIX --- */
+        /* --- BULLETPROOF MOBILE RESPONSIVE STYLES --- */
         @media (max-width: 768px) {
             #brand { top: 10px; padding: 4px 14px; }
             #brand h1 { font-size: 0.8em; }
 
+            /* PERFECTLY LOCKED SEARCH BAR - Will never overflow */
             #search-widget { 
-                top: 48px; width: 88%; max-width: 290px; padding: 2px 2px 2px 10px; 
+                top: 52px; 
+                left: 12px; 
+                right: 12px; 
+                width: auto; 
+                transform: none; /* Removed -50% to prevent bug */
+                max-width: none;
+                padding: 4px 6px 4px 14px; 
+                display: flex;
             }
-            #search-widget input { width: 95px; font-size: 0.72em; }
-            .action-btn { padding: 5px 10px; font-size: 0.62em; }
+            #search-widget input { 
+                flex: 1; /* Automatically fills available space smoothly */
+                width: 100%; 
+                font-size: 16px; /* 16px forces iOS to stop zooming */
+            }
+            .action-btn { padding: 6px 12px; font-size: 0.65em; flex-shrink: 0; margin-left: 6px; }
+            .gps-btn { width: 30px; height: 30px; font-size: 0.8em; flex-shrink: 0; margin-right: 4px; }
 
             #layer-controls { 
-                top: 92px; left: 10px; bottom: auto;
-                flex-direction: row; padding: 4px; gap: 4px; border-radius: 12px;
+                top: 105px; left: 12px; bottom: auto;
+                flex-direction: row; padding: 5px; gap: 5px; border-radius: 12px;
             }
-            .layer-btn { width: 28px; height: 28px; font-size: 0.75em; }
+            .layer-btn { width: 30px; height: 30px; font-size: 0.8em; }
 
-            /* HUD Card - Fixed safely at bottom with safe height and inner scroll */
             #data-hud { 
-                bottom: 10px; right: 10px; left: 10px; 
+                bottom: 12px; right: 12px; left: 12px; 
                 width: auto; 
                 max-height: 38dvh; 
                 overflow-y: auto; 
-                padding: 10px 14px; 
+                padding: 12px 14px; 
                 border-radius: 14px; 
             }
             .weather-display { margin-bottom: 6px; padding-bottom: 6px; gap: 10px; }
-            #w-icon { font-size: 1.5em; }
-            #w-temp { font-size: 1.15em; }
+            #w-icon { font-size: 1.6em; }
+            #w-temp { font-size: 1.2em; }
             .hud-section { margin-bottom: 6px; }
-            .section-title { font-size: 0.58em; margin-bottom: 4px; }
-            .data-item span { font-size: 0.48em; }
-            .data-item strong { font-size: 0.8em; }
+            .section-title { font-size: 0.6em; margin-bottom: 4px; }
+            .data-item span { font-size: 0.5em; }
+            .data-item strong { font-size: 0.85em; }
         }
     </style>
 </head>
@@ -338,7 +353,6 @@
                         
                         const popupContent = `<div class="custom-popup-content">${visuals.icon} <span>${locName} • ${temp}°C</span></div>`;
                         
-                        // Removed .openPopup() on mobile so it doesn't jarringly jerk or shift the map view
                         currentPin = L.marker([lat, lon], {icon: customPinIcon})
                             .bindPopup(popupContent, { closeButton: false, offset: [0, -10], autoPan: false })
                             .addTo(map);
