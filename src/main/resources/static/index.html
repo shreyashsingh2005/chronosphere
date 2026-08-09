@@ -66,17 +66,19 @@
         .layer-btn:hover { background: rgba(0,0,0,0.05); filter: grayscale(0%); opacity: 1; transform: scale(1.1); }
         .layer-btn.active { background: #fff; filter: grayscale(0%); opacity: 1; box-shadow: 0 5px 15px rgba(0,0,0,0.1); transform: scale(1.05); }
 
-        /* Premium Glass HUD with Minimize Support */
+        /* Premium Glass HUD with Smart Collapse */
         #data-hud {
             position: absolute; bottom: 35px; right: 35px; width: 330px; z-index: 1000;
             background: rgba(255, 255, 255, 0.92); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
             border: 1px solid rgba(255, 255, 255, 1); border-radius: 24px; padding: 25px 25px; 
             box-shadow: 0 20px 50px rgba(0,0,0,0.12), inset 0 0 0 1px rgba(255,255,255,0.5);
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .hud-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; cursor: pointer; }
         .section-title { font-size: 0.75em; color: #2563eb; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; margin: 0; display: flex; align-items: center; gap: 10px; flex: 1; }
         .section-title::after { content: ""; flex: 1; height: 1.5px; background: #e5e7eb; border-radius: 2px; margin-left: 10px; }
+        
+        .min-summary { display: none; font-size: 0.9em; font-weight: 700; color: #111827; align-items: center; gap: 8px; }
         
         .minimize-btn { background: #f3f4f6; border: none; border-radius: 50%; width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; font-size: 0.8em; cursor: pointer; color: #2563eb; font-weight: bold; transition: background 0.2s; }
         .minimize-btn:hover { background: #e5e7eb; }
@@ -94,9 +96,11 @@
         .data-item span { display: block; font-size: 0.65em; color: #6b7280; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px; font-weight: 700; }
         .data-item strong { display: block; font-size: 1em; font-weight: 700; color: #1f2937; }
         
-        /* Collapsed State Class */
+        /* Collapsed State Styling */
         #data-hud.collapsed .hud-content-body { display: none; }
-        #data-hud.collapsed { padding: 15px 22px; width: 240px; }
+        #data-hud.collapsed .section-title { display: none; }
+        #data-hud.collapsed .min-summary { display: flex; }
+        #data-hud.collapsed { padding: 12px 18px; width: auto; max-width: 260px; }
 
         /* Smart Pins */
         .pulse-marker-hot { width: 14px; height: 14px; border-radius: 50%; border: 2.5px solid #fff; background: #ef4444; animation: pulseHot 1.5s infinite; }
@@ -116,36 +120,36 @@
         .leaflet-popup-tip { background: rgba(255, 255, 255, 0.95); }
         .custom-popup-content { font-family: 'Segoe UI', sans-serif; font-size: 0.95em; font-weight: 700; color: #111827; padding: 5px 10px; display: flex; align-items: center; gap: 8px; }
 
-        .leaflet-control-zoom { border: none !important; margin-left: 25px !important; margin-bottom: 20px !important; box-shadow: 0 8px 25px rgba(0,0,0,0.1) !important; }
-        .leaflet-control-zoom a { background-color: rgba(255, 255, 255, 0.95) !important; color: #111 !important; border-color: rgba(0,0,0,0.05) !important; width: 35px !important; height: 35px !important; line-height: 35px !important; }
+        .leaflet-control-zoom { border: none !important; margin-left: 20px !important; margin-bottom: 20px !important; box-shadow: 0 8px 25px rgba(0,0,0,0.1) !important; }
+        .leaflet-control-zoom a { background-color: rgba(255, 255, 255, 0.95) !important; color: #111 !important; border-color: rgba(0,0,0,0.05) !important; width: 34px !important; height: 34px !important; line-height: 34px !important; }
 
         /* --- MOBILE RESPONSIVE STYLES --- */
         @media (max-width: 768px) {
             #brand { top: 12px; left: 12px; padding: 6px 12px; }
-            #brand h1 { font-size: 0.9em; }
-            #brand p { font-size: 0.5em; }
+            #brand h1 { font-size: 0.85em; }
+            #brand p { font-size: 0.45em; }
 
             #search-widget { 
-                top: 70px; left: 50%; transform: translateX(-50%);
-                width: 88%; max-width: 330px; padding: 4px 4px 4px 15px; 
+                top: 68px; left: 50%; transform: translateX(-50%);
+                width: 90%; max-width: 320px; padding: 4px 4px 4px 14px; 
             }
-            #search-widget input { width: 125px; font-size: 0.8em; }
+            #search-widget input { width: 120px; font-size: 0.8em; }
             .action-btn { padding: 7px 12px; font-size: 0.7em; }
 
             #layer-controls { 
-                top: 135px; left: 12px; bottom: auto;
+                top: 130px; left: 12px; bottom: auto;
                 flex-direction: row; padding: 5px; gap: 6px;
             }
-            .layer-btn { width: 36px; height: 36px; font-size: 1em; }
+            .layer-btn { width: 34px; height: 34px; font-size: 0.95em; }
 
             #data-hud { 
-                bottom: 15px; right: 12px; left: 12px; 
-                width: auto; padding: 15px 15px; border-radius: 20px; 
+                bottom: 12px; right: 12px; left: 12px; 
+                width: auto; padding: 14px 15px; border-radius: 18px; 
             }
-            .weather-display { margin-bottom: 12px; padding-bottom: 12px; gap: 15px; }
-            #w-icon { font-size: 2.3em; }
-            #w-temp { font-size: 1.6em; }
-            .hud-section { margin-bottom: 12px; }
+            .weather-display { margin-bottom: 10px; padding-bottom: 10px; gap: 12px; }
+            #w-icon { font-size: 2.2em; }
+            #w-temp { font-size: 1.5em; }
+            .hud-section { margin-bottom: 10px; }
         }
     </style>
 </head>
@@ -173,6 +177,9 @@
     <div id="data-hud">
         <div class="hud-header" onclick="toggleHud()">
             <div class="section-title">Atmospheric Data</div>
+            <div class="min-summary" id="minSummary">
+                <span id="min-icon">🌍</span> <span id="min-temp">--°C</span> • <span id="min-loc" style="font-weight:500; color:#4b5563;">Select target</span>
+            </div>
             <button class="minimize-btn" id="minimizeIcon">▼</button>
         </div>
         <div class="hud-content-body">
@@ -196,7 +203,7 @@
                 </div>
             </div>
             <div class="hud-section" id="time-section">
-                <div class="section-title" style="margin-bottom: 10px;">Temporal Sync</div>
+                <div class="section-title" style="margin-bottom: 8px;">Temporal Sync</div>
                 <div class="data-grid">
                     <div class="data-item">
                         <span>Local Time</span>
@@ -278,8 +285,10 @@
                     document.getElementById('time-section').style.opacity = '1';
 
                     let locName = "UNKNOWN AREA";
+                    let shortCity = "Target";
                     if (data.weather && data.weather.name) {
                         let cityName = data.weather.name;
+                        shortCity = cityName;
                         let countryName = "";
                         if (data.weather.sys && data.weather.sys.country) {
                             try {
@@ -303,6 +312,11 @@
                         document.getElementById('w-cond').innerText = desc.replace(/\b\w/g, l => l.toUpperCase());
                         document.getElementById('w-hum').innerText = data.weather.main.humidity + "%";
                         document.getElementById('w-icon').innerText = visuals.icon;
+
+                        // Update collapsed mini bar summary
+                        document.getElementById('min-icon').innerText = visuals.icon;
+                        document.getElementById('min-temp').innerText = temp + "°C";
+                        document.getElementById('min-loc').innerText = shortCity;
 
                         if (currentPin) map.removeLayer(currentPin);
                         const customPinIcon = L.divIcon({ className: visuals.markerClass, iconSize: [14, 14], iconAnchor: [7, 7] });
