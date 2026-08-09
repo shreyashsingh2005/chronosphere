@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ChronoSphere - Global Intelligence Network</title>
+    <title>ChronoSphere - Global Intelligence</title>
     
     <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -19,18 +19,17 @@
         
         #map { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 1; }
         
-        /* CENTERED TOP BRANDING */
+        /* CENTERED TOP BRANDING (Clean & Minimal) */
         #brand { 
             position: absolute; top: 16px; left: 50%; transform: translateX(-50%); z-index: 1000; pointer-events: none; 
             background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
-            padding: 6px 18px; border-radius: 30px;
+            padding: 6px 20px; border-radius: 30px;
             box-shadow: 0 6px 20px rgba(0,0,0,0.08);
             border: 1px solid rgba(255,255,255,0.8);
-            display: flex; align-items: center; gap: 8px;
+            display: flex; align-items: center;
         }
         #brand h1 { margin: 0; font-size: 1em; font-weight: 800; letter-spacing: 0.8px; color: #0f172a; }
         #brand h1 span { color: #2563eb; font-weight: 900; }
-        #brand .brand-tag { font-size: 0.45em; color: #64748b; letter-spacing: 1.5px; text-transform: uppercase; font-weight: 700; border-left: 1px solid #cbd5e1; padding-left: 8px; }
 
         /* COMPACT & SLEEK SEARCH WIDGET */
         #search-widget {
@@ -129,9 +128,8 @@
 
         /* --- MOBILE RESPONSIVE STYLES --- */
         @media (max-width: 768px) {
-            #brand { top: 12px; padding: 5px 14px; }
+            #brand { top: 12px; padding: 5px 16px; }
             #brand h1 { font-size: 0.85em; }
-            #brand .brand-tag { font-size: 0.4em; padding-left: 6px; }
 
             #search-widget { 
                 top: 54px; width: 85%; max-width: 280px; padding: 2px 2px 2px 12px; 
@@ -161,10 +159,9 @@
 
     <div id="map"></div>
     
-    <!-- Top Center Branding -->
+    <!-- Top Center Branding (Clean) -->
     <div id="brand">
         <h1>Chrono<span>Sphere</span></h1>
-        <div class="brand-tag">Network</div>
     </div>
 
     <!-- Compact Top Center Search Widget -->
@@ -263,6 +260,14 @@
             }
         }
 
+        // Auto-expand HUD when a new location is searched or clicked so it never stays hidden/awkward
+        function expandHud() {
+            const hud = document.getElementById('data-hud');
+            const icon = document.getElementById('minimizeIcon');
+            hud.classList.remove('collapsed');
+            icon.innerText = '▼';
+        }
+
         function getWeatherVisuals(desc, temp) {
             let icon = '🌡️'; let markerClass = 'pulse-marker-pleasant';
             if (desc.includes('thunder') || desc.includes('storm')) { icon = '⛈️'; markerClass = 'pulse-marker-rain'; }
@@ -280,6 +285,7 @@
         }
 
         function fetchBackendData(lat, lon) {
+            expandHud(); // Auto-expand card on new data fetch
             document.getElementById('weather-section').style.opacity = '0.5';
             document.getElementById('time-section').style.opacity = '0.5';
             document.getElementById('w-icon').innerText = "⏳";
