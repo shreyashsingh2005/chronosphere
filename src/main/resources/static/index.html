@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ChronoSphere</title>
+    <title>ChronoSphere - Global Intelligence Network</title>
     
     <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -19,18 +19,18 @@
         
         #map { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 1; }
         
-        /* SLEEK PREMIUM BRANDING (Glass Pill Style) */
+        /* REFINED PREMIUM BRANDING (Clean & Professional) */
         #brand { 
             position: absolute; top: 25px; left: 25px; z-index: 1000; pointer-events: none; 
-            background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
-            padding: 10px 20px; border-radius: 16px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-            border: 1px solid rgba(255,255,255,0.7);
+            background: rgba(255, 255, 255, 0.88); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            padding: 12px 22px; border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            border: 1px solid rgba(255,255,255,0.8);
             display: flex; flex-direction: column; align-items: flex-start;
         }
-        #brand h1 { margin: 0; font-size: 1.25em; font-weight: 800; letter-spacing: 1px; color: #111827; }
+        #brand h1 { margin: 0; font-size: 1.3em; font-weight: 800; letter-spacing: 0.5px; color: #0f172a; }
         #brand h1 span { color: #2563eb; }
-        #brand p { margin: 2px 0 0 0px; font-size: 0.6em; color: #4b5563; letter-spacing: 2px; text-transform: uppercase; font-weight: 800; }
+        #brand p { margin: 3px 0 0 0px; font-size: 0.55em; color: #64748b; letter-spacing: 2.5px; text-transform: uppercase; font-weight: 700; }
 
         /* Search Widget */
         #search-widget {
@@ -53,9 +53,9 @@
         #layer-controls {
             position: absolute; bottom: 35px; left: 25px; z-index: 1000;
             display: flex; flex-direction: column; gap: 10px;
-            background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(20px);
+            background: rgba(255, 255, 255, 0.88); backdrop-filter: blur(20px);
             padding: 10px; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.12);
-            border: 1px solid rgba(255,255,255,0.5);
+            border: 1px solid rgba(255,255,255,0.6);
         }
         .layer-btn {
             background: transparent; border: none; border-radius: 12px;
@@ -66,7 +66,7 @@
         .layer-btn:hover { background: rgba(0,0,0,0.05); filter: grayscale(0%); opacity: 1; transform: scale(1.1); }
         .layer-btn.active { background: #fff; filter: grayscale(0%); opacity: 1; box-shadow: 0 5px 15px rgba(0,0,0,0.1); transform: scale(1.05); }
 
-        /* Premium Glass HUD with Smart Collapse */
+        /* Premium Glass HUD */
         #data-hud {
             position: absolute; bottom: 35px; right: 35px; width: 330px; z-index: 1000;
             background: rgba(255, 255, 255, 0.92); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
@@ -125,19 +125,19 @@
 
         /* --- MOBILE RESPONSIVE STYLES --- */
         @media (max-width: 768px) {
-            #brand { top: 12px; left: 12px; padding: 6px 12px; }
-            #brand h1 { font-size: 0.85em; }
+            #brand { top: 12px; left: 12px; padding: 8px 14px; }
+            #brand h1 { font-size: 0.95em; }
             #brand p { font-size: 0.45em; }
 
             #search-widget { 
-                top: 68px; left: 50%; transform: translateX(-50%);
+                top: 72px; left: 50%; transform: translateX(-50%);
                 width: 90%; max-width: 320px; padding: 4px 4px 4px 14px; 
             }
             #search-widget input { width: 120px; font-size: 0.8em; }
             .action-btn { padding: 7px 12px; font-size: 0.7em; }
 
             #layer-controls { 
-                top: 130px; left: 12px; bottom: auto;
+                top: 135px; left: 12px; bottom: auto;
                 flex-direction: row; padding: 5px; gap: 6px;
             }
             .layer-btn { width: 34px; height: 34px; font-size: 0.95em; }
@@ -157,20 +157,21 @@
 
     <div id="map"></div>
     
+    <!-- Clean & Professional Branding -->
     <div id="brand">
         <h1>Chr<span>⚛</span>noSphere</h1>
-        <p>Command Center</p>
+        <p>Atmospheric & Temporal Live</p>
     </div>
 
     <div id="layer-controls">
         <button class="layer-btn" id="btn-sat" onclick="switchLayer('sat')" title="Hybrid Satellite View">🛰️</button>
         <button class="layer-btn active" id="btn-light" onclick="switchLayer('light')" title="Light Map">🗺️</button>
-        <button class="layer-btn" id="btn-dark" onclick="switchLayer('dark')" title="Premium Dark Mode">🌙</button>
+        <button class="layer-btn" id="btn-dark" onclick="switchLayer('dark')" title="Dark Mode">🌙</button>
     </div>
 
     <div id="search-widget">
-        <input type="text" id="searchInput" placeholder="Initializing uplink..." onkeypress="handleEnter(event)">
-        <button class="gps-btn" onclick="locateMe()" title="GPS Auto-Locate">📍</button>
+        <input type="text" id="searchInput" placeholder="Search city or location..." onkeypress="handleEnter(event)">
+        <button class="gps-btn" onclick="locateMe()" title="Auto-Locate">📍</button>
         <button class="action-btn" onclick="searchCity()">Scan</button>
     </div>
 
@@ -313,7 +314,6 @@
                         document.getElementById('w-hum').innerText = data.weather.main.humidity + "%";
                         document.getElementById('w-icon').innerText = visuals.icon;
 
-                        // Update collapsed mini bar summary
                         document.getElementById('min-icon').innerText = visuals.icon;
                         document.getElementById('min-temp').innerText = temp + "°C";
                         document.getElementById('min-loc').innerText = shortCity;
@@ -344,7 +344,7 @@
             const searchInput = document.getElementById('searchInput');
             const query = searchInput.value.trim();
             if (!query) return;
-            searchInput.placeholder = "Scanning database...";
+            searchInput.placeholder = "Searching...";
             fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${query}`)
                 .then(res => res.json())
                 .then(data => {
@@ -352,18 +352,17 @@
                         const lat = parseFloat(data[0].lat); const lon = parseFloat(data[0].lon);
                         map.flyTo([lat, lon], 10, { animate: true, duration: 1.5 });
                         fetchBackendData(lat, lon);
-                        searchInput.placeholder = "Search coordinates or city...";
+                        searchInput.placeholder = "Search city or location...";
                         searchInput.value = ""; 
                     } else {
-                        searchInput.value = ""; searchInput.placeholder = "❌ Target not found!";
-                        setTimeout(() => searchInput.placeholder = "Search coordinates or city...", 3000);
+                        searchInput.value = ""; searchInput.placeholder = "❌ Not found!";
+                        setTimeout(() => searchInput.placeholder = "Search city or location...", 3000);
                     }
                 }).catch(err => console.error(err));
         }
 
         window.onload = () => {
             const searchInput = document.getElementById('searchInput');
-            
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
                     (position) => {
@@ -371,32 +370,31 @@
                         const lon = position.coords.longitude;
                         map.flyTo([lat, lon], 12, { animate: true, duration: 2.5 });
                         fetchBackendData(lat, lon);
-                        searchInput.placeholder = "Search coordinates or city...";
+                        searchInput.placeholder = "Search city or location...";
                     },
                     (error) => { 
-                        console.log("Location access denied or failed.");
                         map.flyTo([22.5, 79.0], 5, { animate: true, duration: 1.5 });
                         fetchBackendData(28.6139, 77.2090); 
-                        searchInput.placeholder = "Search coordinates or city..."; 
+                        searchInput.placeholder = "Search city or location..."; 
                     }
                 );
             } else {
-                searchInput.placeholder = "Search coordinates or city...";
+                searchInput.placeholder = "Search city or location...";
             }
         };
 
         function locateMe() {
             const searchInput = document.getElementById('searchInput');
-            searchInput.value = ""; searchInput.placeholder = "Acquiring satellite lock... 🛰️";
+            searchInput.value = ""; searchInput.placeholder = "Locating GPS... 🛰️";
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
                     (position) => {
                         const lat = position.coords.latitude; const lon = position.coords.longitude;
                         map.flyTo([lat, lon], 12, { animate: true, duration: 1.5 });
                         fetchBackendData(lat, lon);
-                        searchInput.placeholder = "Search coordinates or city...";
+                        searchInput.placeholder = "Search city or location...";
                     },
-                    (error) => { searchInput.placeholder = "❌ Location denied!"; setTimeout(() => searchInput.placeholder = "Search coordinates or city...", 3000); }
+                    (error) => { searchInput.placeholder = "❌ GPS Denied!"; setTimeout(() => searchInput.placeholder = "Search city or location...", 3000); }
                 );
             }
         }
