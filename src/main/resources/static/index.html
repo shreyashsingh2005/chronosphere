@@ -63,7 +63,6 @@
         .main-layer-btn:hover { background: #fff; transform: scale(1.05); box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
         .main-layer-btn svg { width: 22px; height: 22px; fill: #4b5563; }
         
-        /* The Panel containing thumbnail options and radar */
         #layer-panel {
             position: absolute; bottom: 0; left: 60px;
             background: rgba(255, 255, 255, 0.92); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
@@ -95,7 +94,7 @@
         .radar-toggle.active .toggle-switch { background: #2563eb; }
         .radar-toggle.active .toggle-switch::after { transform: translateX(16px); }
 
-        /* HUD CARD - Expanded for more data */
+        /* ADVANCED HUD CARD */
         #data-hud {
             position: fixed; bottom: 20px; right: 20px; width: 310px; z-index: 1000;
             background: rgba(255, 255, 255, 0.94); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
@@ -120,12 +119,13 @@
         #w-icon { font-size: 2.6em; line-height: 1; }
         .temp-info { display: flex; flex-direction: column; }
         #w-temp { font-size: 1.8em; font-weight: 800; color: #111827; line-height: 1; margin-bottom: 3px; }
-        #w-cond { font-size: 0.8em; color: #4b5563; font-weight: 600; }
+        #w-cond { font-size: 0.8em; color: #4b5563; font-weight: 600; text-transform: capitalize; }
         #w-feels { font-size: 0.7em; font-weight: 700; color: #ef4444; background: rgba(239, 68, 68, 0.1); padding: 3px 8px; border-radius: 10px; text-align: center; }
         
         .data-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .data-item span { display: block; font-size: 0.55em; color: #6b7280; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 2px; font-weight: 700; }
         .data-item strong { display: block; font-size: 0.85em; font-weight: 700; color: #1f2937; word-break: break-word; }
+        .rain-highlight { color: #2563eb !important; font-weight: 900 !important; font-size: 1em !important; }
         
         #data-hud.collapsed .hud-content-body { display: none; }
         #data-hud.collapsed .section-title { display: none; }
@@ -200,12 +200,10 @@
         <button class="action-btn" onclick="searchCity()">Scan</button>
     </div>
 
-    <!-- PRO VISUAL LAYER MENU WITH LIVE RADAR -->
     <div id="layer-controls-wrapper" onmouseleave="closeLayers()">
         <div class="main-layer-btn" onclick="toggleLayers()" title="Map Details">
             <svg viewBox="0 0 24 24"><path d="M11.99 2 2.5 7l9.49 5 9.51-5zM2.5 12l9.49 5 9.51-5M2.5 17l9.49 5 9.51-5"/></svg>
         </div>
-        
         <div id="layer-panel">
             <div class="layer-panel-title">Map Type</div>
             <div class="layer-grid">
@@ -237,7 +235,6 @@
         </div>
     </div>
 
-    <!-- ADVANCED HUD CARD -->
     <div id="data-hud">
         <div class="hud-header" onclick="toggleHud()">
             <div class="section-title">Atmospheric Data</div>
@@ -264,6 +261,10 @@
                         <strong id="w-loc">--</strong>
                     </div>
                     <div class="data-item">
+                        <span>Rain Chance</span>
+                        <strong id="w-rain-chance" class="rain-highlight">--%</strong>
+                    </div>
+                    <div class="data-item">
                         <span>Wind Speed</span>
                         <strong id="w-wind">-- km/h</strong>
                     </div>
@@ -271,14 +272,10 @@
                         <span>Humidity</span>
                         <strong id="w-hum">--</strong>
                     </div>
-                    <div class="data-item">
-                        <span>Pressure</span>
-                        <strong id="w-pres">-- hPa</strong>
-                    </div>
                 </div>
             </div>
             <div class="hud-section" id="time-section">
-                <div class="section-title" style="margin-bottom: 8px;">Temporal Sync</div>
+                <div class="section-title" style="margin-bottom: 6px;">Temporal Sync</div>
                 <div class="data-grid">
                     <div class="data-item">
                         <span>Local Time</span>
@@ -317,7 +314,6 @@
         const satLabels = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}{r}.png', { attribution: '&copy; CARTO' });
         const hybridSatLayer = L.layerGroup([satImage, satLabels]); 
 
-        // LIVE WEATHER RADAR LAYERS
         const rainRadar = L.tileLayer(`https://tile.openweathermap.org/map/precipitation_new/{z}/{x}/{y}.png?appid=${WEATHER_API_KEY}`, { opacity: 0.7 });
         const cloudRadar = L.tileLayer(`https://tile.openweathermap.org/map/clouds_new/{z}/{x}/{y}.png?appid=${WEATHER_API_KEY}`, { opacity: 0.7 });
 
@@ -341,8 +337,6 @@
             
             closeLayers();
             if(currentPin) { map.removeLayer(currentPin); currentPin.addTo(map); }
-            
-            // Re-apply active radars on top
             if(activeRadar.rain) rainRadar.bringToFront();
             if(activeRadar.clouds) cloudRadar.bringToFront();
         }
@@ -350,15 +344,9 @@
         function toggleRadar(type) {
             const btn = document.getElementById(type === 'rain' ? 'radar-rain' : 'radar-cloud');
             const layer = type === 'rain' ? rainRadar : cloudRadar;
-            
             activeRadar[type] = !activeRadar[type];
-            if(activeRadar[type]) {
-                layer.addTo(map);
-                btn.classList.add('active');
-            } else {
-                map.removeLayer(layer);
-                btn.classList.remove('active');
-            }
+            if(activeRadar[type]) { layer.addTo(map); btn.classList.add('active'); } 
+            else { map.removeLayer(layer); btn.classList.remove('active'); }
         }
 
         let currentPin = null;
@@ -393,11 +381,12 @@
             return { icon, markerClass };
         }
 
-        // Format unix timestamp to local time string based on timezone offset
-        function formatSunTime(unixTime, timezoneOffset) {
-            if (!unixTime) return "--";
-            const date = new Date((unixTime + timezoneOffset) * 1000);
-            return date.toLocaleTimeString('en-US', { timeZone: 'UTC', hour: '2-digit', minute: '2-digit', hour12: true });
+        // PERFECT LOCAL TIME CALCULATOR
+        function getExactLocalTimeStr(serverTimeSec, offsetSec) {
+            const localWallClockDate = new Date((serverTimeSec + offsetSec) * 1000);
+            const tTime = localWallClockDate.toLocaleTimeString('en-US', { timeZone: 'UTC', hour: '2-digit', minute: '2-digit', hour12: true });
+            const tDate = localWallClockDate.toLocaleDateString('en-US', { timeZone: 'UTC', month: 'short', day: 'numeric', year: 'numeric' });
+            return { tTime, tDate };
         }
 
         function fetchBackendData(lat, lon) {
@@ -405,72 +394,76 @@
             document.getElementById('weather-section').style.opacity = '0.5';
             document.getElementById('time-section').style.opacity = '0.5';
             document.getElementById('w-icon').innerText = "⏳";
+            document.getElementById('w-rain-chance').innerText = "--%";
             
+            // 1. Fetch Current Weather & Exact Time
             fetch(`/api/data?lat=${lat}&lon=${lon}`)
                 .then(res => res.json())
                 .then(data => {
                     document.getElementById('weather-section').style.opacity = '1';
                     document.getElementById('time-section').style.opacity = '1';
 
-                    let locName = "UNKNOWN AREA";
-                    let shortCity = "Target";
-                    if (data.weather && data.weather.name) {
-                        let cityName = data.weather.name;
-                        shortCity = cityName;
-                        let countryName = "";
-                        if (data.weather.sys && data.weather.sys.country) {
-                            try {
-                                const regionNames = new Intl.DisplayNames(['en'], {type: 'region'});
-                                countryName = ", " + regionNames.of(data.weather.sys.country);
-                            } catch (e) {
-                                countryName = ", " + data.weather.sys.country;
-                            }
-                        }
-                        locName = cityName + countryName;
-                    }
-                    
-                    document.getElementById('w-loc').innerText = locName;
-
                     if (data.weather && data.weather.weather) {
                         const temp = Math.round(data.weather.main.temp);
                         const feelsLike = Math.round(data.weather.main.feels_like);
-                        const desc = data.weather.weather[0].description.toLowerCase();
-                        const visuals = getWeatherVisuals(desc, temp);
-                        const windKmh = Math.round(data.weather.wind.speed * 3.6); // m/s to km/h
+                        const desc = data.weather.weather[0].description;
+                        const visuals = getWeatherVisuals(desc.toLowerCase(), temp);
+                        const windKmh = Math.round(data.weather.wind.speed * 3.6); 
                         const tzOffset = data.weather.timezone || 0;
+                        const serverTime = data.weather.dt;
 
                         document.getElementById('w-temp').innerText = temp + "°C";
                         document.getElementById('w-feels').innerText = "Feels " + feelsLike + "°C";
-                        document.getElementById('w-cond').innerText = desc.replace(/\b\w/g, l => l.toUpperCase());
+                        document.getElementById('w-cond').innerText = desc;
                         document.getElementById('w-hum').innerText = data.weather.main.humidity + "%";
                         document.getElementById('w-wind').innerText = windKmh + " km/h";
-                        document.getElementById('w-pres').innerText = data.weather.main.pressure + " hPa";
                         document.getElementById('w-icon').innerText = visuals.icon;
 
-                        // Calculate exact local sunrise/sunset
-                        if(data.weather.sys) {
-                            document.getElementById('t-sunrise').innerText = formatSunTime(data.weather.sys.sunrise, tzOffset);
-                            document.getElementById('t-sunset').innerText = formatSunTime(data.weather.sys.sunset, tzOffset);
+                        if(data.weather.sys && data.weather.sys.sunrise) {
+                            document.getElementById('t-sunrise').innerText = getExactLocalTimeStr(data.weather.sys.sunrise, tzOffset).tTime;
+                            document.getElementById('t-sunset').innerText = getExactLocalTimeStr(data.weather.sys.sunset, tzOffset).tTime;
                         }
 
-                        document.getElementById('min-icon').innerText = visuals.icon;
-                        document.getElementById('min-temp').innerText = temp + "°C";
-                        document.getElementById('min-loc').innerText = shortCity;
+                        const accurateTime = getExactLocalTimeStr(serverTime, tzOffset);
+                        document.getElementById('t-date').innerText = accurateTime.tDate;
+                        document.getElementById('t-time').innerText = accurateTime.tTime;
 
-                        if (currentPin) map.removeLayer(currentPin);
-                        const customPinIcon = L.divIcon({ className: visuals.markerClass, iconSize: [16, 16], iconAnchor: [8, 8] });
-                        
-                        const popupContent = `<div class="custom-popup-content">${visuals.icon} <span>${locName} • ${temp}°C</span></div>`;
-                        
-                        currentPin = L.marker([lat, lon], {icon: customPinIcon})
-                            .bindPopup(popupContent, { closeButton: false, offset: [0, -10], autoPan: false })
-                            .addTo(map);
-                    }
-                    
-                    if (data.time && data.time.dateTime) {
-                        const dateObj = new Date(data.time.dateTime);
-                        document.getElementById('t-date').innerText = dateObj.toLocaleDateString('en-IN', { month: 'short', day: 'numeric', year: 'numeric' });
-                        document.getElementById('t-time').innerText = dateObj.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true });
+                        // 2. Fetch Reverse Geocode for 100% Accurate City Name
+                        fetch(`https://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lon}&limit=1&appid=${WEATHER_API_KEY}`)
+                            .then(geoRes => geoRes.json())
+                            .then(geoData => {
+                                let locName = "Unknown Area";
+                                let shortCity = "Target";
+                                if (geoData && geoData.length > 0) {
+                                    shortCity = geoData[0].name;
+                                    let state = geoData[0].state ? geoData[0].state + ", " : "";
+                                    locName = `${shortCity}, ${state}${geoData[0].country}`;
+                                } else if (data.weather.name) {
+                                    shortCity = data.weather.name; locName = shortCity;
+                                }
+                                document.getElementById('w-loc').innerText = locName;
+                                document.getElementById('min-loc').innerText = shortCity;
+                                document.getElementById('min-icon').innerText = visuals.icon;
+                                document.getElementById('min-temp').innerText = temp + "°C";
+
+                                if (currentPin) map.removeLayer(currentPin);
+                                const customPinIcon = L.divIcon({ className: visuals.markerClass, iconSize: [16, 16], iconAnchor: [8, 8] });
+                                const popupContent = `<div class="custom-popup-content">${visuals.icon} <span>${locName} • ${temp}°C</span></div>`;
+                                currentPin = L.marker([lat, lon], {icon: customPinIcon}).bindPopup(popupContent, { closeButton: false, offset: [0, -10], autoPan: false }).addTo(map);
+                            });
+
+                        // 3. Fetch Forecast API for 100% Accurate Rain Chance (PoP)
+                        fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&cnt=2&appid=${WEATHER_API_KEY}`)
+                            .then(fRes => fRes.json())
+                            .then(fData => {
+                                if (fData && fData.list && fData.list.length > 0) {
+                                    // pop is a value between 0 and 1, we multiply by 100 for percentage
+                                    const rainChancePercent = Math.round(fData.list[0].pop * 100);
+                                    document.getElementById('w-rain-chance').innerText = rainChancePercent + "%";
+                                } else {
+                                    document.getElementById('w-rain-chance').innerText = "0%";
+                                }
+                            }).catch(() => document.getElementById('w-rain-chance').innerText = "--%");
                     }
                 })
                 .catch(err => console.error("Error:", err));
@@ -488,16 +481,12 @@
                 .then(res => res.json())
                 .then(data => {
                     if (data && data.length > 0) {
-                        const lat = parseFloat(data[0].lat); 
-                        const lon = parseFloat(data[0].lon);
+                        const lat = parseFloat(data[0].lat); const lon = parseFloat(data[0].lon);
                         map.flyTo([lat, lon], 10, { animate: true, duration: 1.5 });
                         fetchBackendData(lat, lon);
-                        searchInput.placeholder = "Search city...";
-                        searchInput.value = ""; 
-                        searchInput.blur();
+                        searchInput.placeholder = "Search city..."; searchInput.value = ""; searchInput.blur();
                     } else {
-                        searchInput.value = ""; 
-                        searchInput.placeholder = "❌ Not found!";
+                        searchInput.value = ""; searchInput.placeholder = "❌ Not found!";
                         setTimeout(() => searchInput.placeholder = "Search city...", 3000);
                     }
                 }).catch(err => console.error(err));
@@ -508,14 +497,11 @@
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
                     (position) => {
-                        const lat = position.coords.latitude; 
-                        const lon = position.coords.longitude;
-                        map.flyTo([lat, lon], 12, { animate: true, duration: 2.5 });
-                        fetchBackendData(lat, lon);
+                        const lat = position.coords.latitude; const lon = position.coords.longitude;
+                        map.flyTo([lat, lon], 12, { animate: true, duration: 2.5 }); fetchBackendData(lat, lon);
                     },
                     (error) => { 
-                        map.flyTo([28.6139, 77.2090], 10, { animate: true, duration: 1.5 });
-                        fetchBackendData(28.6139, 77.2090); 
+                        map.flyTo([28.6139, 77.2090], 10, { animate: true, duration: 1.5 }); fetchBackendData(28.6139, 77.2090); 
                     }
                 );
             }
@@ -528,8 +514,7 @@
                 navigator.geolocation.getCurrentPosition(
                     (position) => {
                         const lat = position.coords.latitude; const lon = position.coords.longitude;
-                        map.flyTo([lat, lon], 12, { animate: true, duration: 1.5 });
-                        fetchBackendData(lat, lon);
+                        map.flyTo([lat, lon], 12, { animate: true, duration: 1.5 }); fetchBackendData(lat, lon);
                         searchInput.placeholder = "Search city...";
                     },
                     (error) => { searchInput.placeholder = "❌ GPS Denied!"; setTimeout(() => searchInput.placeholder = "Search city...", 3000); }
