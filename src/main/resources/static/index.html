@@ -32,23 +32,41 @@
         #brand h1 { margin: 0; font-size: 0.95em; font-weight: 800; letter-spacing: 0.8px; color: #0f172a; }
         #brand h1 span { color: #2563eb; font-weight: 900; }
 
-        /* SEARCH WIDGET */
-        #search-widget {
+        /* SEARCH WRAPPER & WIDGET (With Dropdown Support) */
+        #search-wrapper {
             position: absolute; top: 54px; left: 50%; transform: translateX(-50%); z-index: 1000;
-            display: flex; align-items: center;
+            width: 100%; max-width: 380px; display: flex; flex-direction: column; align-items: center;
+        }
+        #search-widget {
+            width: 100%; display: flex; align-items: center;
             background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
             border: 1px solid rgba(37, 99, 235, 0.2); border-radius: 50px; padding: 4px 6px 4px 16px;
             box-shadow: 0 8px 25px rgba(37, 99, 235, 0.12); transition: all 0.3s ease;
         }
         #search-widget:hover, #search-widget:focus-within { border-color: #2563eb; box-shadow: 0 10px 30px rgba(37, 99, 235, 0.2); }
-        #search-widget input { background: transparent; border: none; color: #111827; width: 180px; font-size: 0.85em; font-weight: 600; outline: none; }
+        #search-widget input { background: transparent; border: none; color: #111827; flex: 1; font-size: 0.85em; font-weight: 600; outline: none; }
         #search-widget input::placeholder { color: #9ca3af; font-weight: 500; }
         
-        .action-btn { background: #2563eb; color: #fff; border: none; border-radius: 40px; padding: 6px 16px; font-weight: bold; font-size: 0.75em; text-transform: uppercase; letter-spacing: 0.8px; cursor: pointer; transition: all 0.3s; margin-left: 5px; box-shadow: 0 3px 12px rgba(37, 99, 235, 0.3); }
+        .action-btn { background: #2563eb; color: #fff; border: none; border-radius: 40px; padding: 6px 16px; font-weight: bold; font-size: 0.75em; text-transform: uppercase; letter-spacing: 0.8px; cursor: pointer; transition: all 0.3s; margin-left: 5px; box-shadow: 0 3px 12px rgba(37, 99, 235, 0.3); flex-shrink: 0; }
         .action-btn:hover { background: #1d4ed8; transform: translateY(-1px); box-shadow: 0 5px 15px rgba(37, 99, 235, 0.4); }
         
-        .gps-btn { background: #f3f4f6; color: #2563eb; border: 1px solid #e5e7eb; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; font-size: 0.85em; cursor: pointer; transition: all 0.3s; margin-right: 3px; }
+        .gps-btn { background: #f3f4f6; color: #2563eb; border: 1px solid #e5e7eb; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; font-size: 0.85em; cursor: pointer; transition: all 0.3s; margin-right: 3px; flex-shrink: 0; }
         .gps-btn:hover { background: #e5e7eb; color: #1d4ed8; transform: scale(1.05); }
+
+        /* LIVE AUTO-COMPLETE SUGGESTIONS DROPDOWN */
+        #search-suggestions {
+            display: none; width: 92%; background: rgba(255, 255, 255, 0.96); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(37, 99, 235, 0.15); border-radius: 16px; margin-top: 8px; margin-bottom: 0;
+            box-shadow: 0 12px 35px rgba(0,0,0,0.15); padding: 6px; list-style: none;
+            max-height: 220px; overflow-y: auto; text-align: left;
+        }
+        #search-suggestions li {
+            padding: 10px 14px; font-size: 0.75em; font-weight: 700; color: #374151;
+            border-bottom: 1px solid #f3f4f6; cursor: pointer; transition: background 0.2s; border-radius: 10px;
+            display: flex; align-items: center; gap: 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        #search-suggestions li:last-child { border-bottom: none; }
+        #search-suggestions li:hover { background: #eff6ff; color: #2563eb; }
 
         /* GOOGLE MAPS STYLE VISUAL LAYER CONTROLS */
         #layer-controls-wrapper { position: absolute; bottom: 25px; left: 20px; z-index: 1000; }
@@ -139,13 +157,16 @@
             #brand { top: 10px; padding: 4px 14px; }
             #brand h1 { font-size: 0.8em; }
 
-            #search-widget { 
+            /* Perfectly contained mobile search wrapper */
+            #search-wrapper { 
                 top: 52px; left: 12px; right: 12px; width: auto; 
-                transform: none; max-width: none; padding: 4px 6px 4px 14px; display: flex;
+                transform: none; max-width: none;
             }
-            #search-widget input { flex: 1; width: 100%; font-size: 16px; }
-            .action-btn { padding: 6px 12px; font-size: 0.65em; flex-shrink: 0; margin-left: 6px; }
-            .gps-btn { width: 30px; height: 30px; font-size: 0.8em; flex-shrink: 0; margin-right: 4px; }
+            #search-widget { padding: 4px 6px 4px 14px; }
+            #search-widget input { font-size: 16px; }
+            .action-btn { padding: 6px 12px; font-size: 0.65em; margin-left: 6px; }
+            .gps-btn { width: 30px; height: 30px; font-size: 0.8em; margin-right: 4px; }
+            #search-suggestions { width: 100%; }
 
             #layer-controls-wrapper { top: 105px; left: 12px; bottom: auto; }
             .main-layer-btn { width: 40px; height: 40px; }
@@ -173,10 +194,14 @@
         <h1>Chrono<span>Sphere</span></h1>
     </div>
 
-    <div id="search-widget">
-        <input type="text" id="searchInput" placeholder="Search city or village..." onkeypress="handleEnter(event)">
-        <button class="gps-btn" onclick="locateMe()" title="Auto-Locate">📍</button>
-        <button class="action-btn" onclick="searchCity()">Scan</button>
+    <!-- WRAPPED SEARCH SYSTEM FOR AUTO-COMPLETE -->
+    <div id="search-wrapper">
+        <div id="search-widget">
+            <input type="text" id="searchInput" placeholder="Search city or village..." onkeypress="handleEnter(event)" autocomplete="off">
+            <button class="gps-btn" onclick="locateMe()" title="Auto-Locate">📍</button>
+            <button class="action-btn" onclick="searchCity()">Scan</button>
+        </div>
+        <ul id="search-suggestions"></ul>
     </div>
 
     <div id="layer-controls-wrapper" onmouseleave="closeLayers()">
@@ -395,7 +420,6 @@
                         document.getElementById('t-date').innerText = accurateTime.tDate;
                         document.getElementById('t-time').innerText = accurateTime.tTime;
 
-                        // Reverse Geocode
                         fetch(`https://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lon}&limit=1&appid=${WEATHER_API_KEY}`)
                             .then(geoRes => geoRes.json())
                             .then(geoData => {
@@ -419,7 +443,6 @@
                                 currentPin = L.marker([lat, lon], {icon: customPinIcon}).bindPopup(popupContent, { closeButton: false, offset: [0, -10], autoPan: false }).addTo(map);
                             });
 
-                        // Rain Chance Forecast
                         fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&cnt=2&appid=${WEATHER_API_KEY}`)
                             .then(fRes => fRes.json())
                             .then(fData => {
@@ -434,59 +457,93 @@
 
         map.on('click', function(e) { fetchBackendData(e.latlng.lat, e.latlng.lng); closeLayers(); });
 
-        // GOOGLE-LEVEL SMART SEARCH FUNCTION (Auto-Typos & Location Fallback)
-        function searchCity() {
-            const searchInput = document.getElementById('searchInput');
-            let query = searchInput.value.trim();
-            if (!query) return;
-            searchInput.placeholder = "Scanning Matrix...";
-            
-            // Auto-correct common typos logic
-            query = query.replace(/hariyana/gi, 'haryana');
-            query = query.replace(/khord/gi, 'khurd');
+        // === GOOGLE MAPS STYLE AUTO-COMPLETE LOGIC ===
+        let debounceTimer;
+        const searchInput = document.getElementById('searchInput');
+        const suggestionsBox = document.getElementById('search-suggestions');
 
-            // Attempt 1: OpenWeather (Best for Cities/States)
+        searchInput.addEventListener('input', function() {
+            clearTimeout(debounceTimer);
+            const query = this.value.trim();
+            
+            if (query.length < 3) {
+                suggestionsBox.style.display = 'none';
+                return;
+            }
+
+            // Wait 500ms after user stops typing to fetch suggestions (prevents spamming API)
+            debounceTimer = setTimeout(() => {
+                fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=5&addressdetails=1`)
+                    .then(res => res.json())
+                    .then(data => {
+                        suggestionsBox.innerHTML = '';
+                        if (data && data.length > 0) {
+                            data.forEach(item => {
+                                const li = document.createElement('li');
+                                // Make the name look clean (max 3 parts like "Noida, UP, India")
+                                let displayNameParts = item.display_name.split(',').map(s => s.trim());
+                                let cleanName = displayNameParts.slice(0, 3).join(', ');
+                                
+                                li.innerHTML = `📍 <span>${cleanName}</span>`;
+                                li.onclick = () => {
+                                    searchInput.value = cleanName;
+                                    suggestionsBox.style.display = 'none';
+                                    triggerLocation(parseFloat(item.lat), parseFloat(item.lon), searchInput);
+                                };
+                                suggestionsBox.appendChild(li);
+                            });
+                            suggestionsBox.style.display = 'block';
+                        } else {
+                            suggestionsBox.style.display = 'none';
+                        }
+                    }).catch(() => { suggestionsBox.style.display = 'none'; });
+            }, 500); 
+        });
+
+        // Hide suggestions if user clicks anywhere outside the search box
+        document.addEventListener('click', function(e) {
+            if (!document.getElementById('search-wrapper').contains(e.target)) {
+                suggestionsBox.style.display = 'none';
+            }
+        });
+
+        // Search Fallback if user presses enter or scan without clicking suggestion
+        function searchCity() {
+            const query = searchInput.value.trim();
+            if (!query) return;
+            suggestionsBox.style.display = 'none';
+            searchInput.placeholder = "Scanning Database...";
+            
             fetch(`https://api.openweathermap.org/geo/1.0/direct?q=${encodeURIComponent(query)}&limit=1&appid=${WEATHER_API_KEY}`)
                 .then(res => res.json())
                 .then(data => {
                     if (data && data.length > 0) {
                         triggerLocation(data[0].lat, data[0].lon, searchInput);
                     } else {
-                        // Attempt 2: OpenStreetMap Strict (Best for local areas & villages)
                         fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=1`)
                             .then(osmRes => osmRes.json())
                             .then(osmData => {
                                 if (osmData && osmData.length > 0) {
                                     triggerLocation(parseFloat(osmData[0].lat), parseFloat(osmData[0].lon), searchInput);
                                 } else {
-                                    // Attempt 3: Smart Fallback (Forcing India context to prevent mapping to Africa/Japan)
-                                    let fallbackQuery = query + ", India";
-                                    fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(fallbackQuery)}&limit=1`)
-                                        .then(fbRes => fbRes.json())
-                                        .then(fbData => {
-                                            if (fbData && fbData.length > 0) {
-                                                triggerLocation(parseFloat(fbData[0].lat), parseFloat(fbData[0].lon), searchInput);
-                                            } else {
-                                                showError(searchInput);
-                                            }
-                                        }).catch(() => showError(searchInput));
+                                    showError(searchInput);
                                 }
                             }).catch(() => showError(searchInput));
                     }
                 }).catch(() => showError(searchInput));
         }
 
-        function triggerLocation(lat, lon, searchInput) {
+        function triggerLocation(lat, lon, inputEl) {
             map.flyTo([lat, lon], 12, { animate: true, duration: 1.5 });
             fetchBackendData(lat, lon);
-            searchInput.placeholder = "Search city or village...";
-            searchInput.value = ""; 
-            searchInput.blur();
+            inputEl.placeholder = "Search city or village...";
+            inputEl.value = ""; 
+            inputEl.blur();
         }
 
         function showError(input) {
             input.value = ""; 
-            input.placeholder = "❌ Location not found!";
+            input.placeholder = "❌ Target not found!";
             setTimeout(() => input.placeholder = "Search city or village...", 3000);
         }
 
@@ -505,8 +562,8 @@
         };
 
         function locateMe() {
-            const searchInput = document.getElementById('searchInput');
             searchInput.value = ""; searchInput.placeholder = "Locating... 🛰️";
+            suggestionsBox.style.display = 'none';
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
                     (position) => {
