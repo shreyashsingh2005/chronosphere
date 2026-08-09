@@ -207,7 +207,7 @@
         <div id="layer-panel">
             <div class="layer-panel-title">Map Type</div>
             <div class="layer-grid">
-                <!-- NOW USING DIRECT GOOGLE MAPS TILES FOR 100% A-Z DETAIL -->
+                <!-- HD RETINA DETECT ENABLED FOR ALL LAYERS -->
                 <div class="layer-item active" id="item-light" onclick="switchLayer('light')">
                     <div class="layer-thumb" style="background-image: url('https://mt1.google.com/vt/lyrs=m&x=13&y=23&z=5');"></div>
                     <span>Default</span>
@@ -307,14 +307,10 @@
         L.control.zoom({ position: 'topleft' }).addTo(map);
         L.control.scale({ position: 'bottomleft', imperial: false }).addTo(map);
         
-        // 1. EXACT GOOGLE MAPS (A to Z ALL VILLAGES/STREETS)
-        const lightLayer = L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', { maxZoom: 20, attribution: '&copy; Google Maps' });
-        
-        // 2. EXACT GOOGLE SATELLITE WITH LABELS
-        const hybridSatLayer = L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', { maxZoom: 20, attribution: '&copy; Google Maps' });
-        
-        // 3. DETAILED DARK MAP
-        const premiumDarkLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { maxZoom: 20, attribution: '&copy; CARTO' });
+        // ADDED detectRetina: true FOR HD MAPS ON MOBILES/HIGH-RES SCREENS
+        const lightLayer = L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', { maxZoom: 20, detectRetina: true, attribution: '&copy; Google Maps' });
+        const hybridSatLayer = L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', { maxZoom: 20, detectRetina: true, attribution: '&copy; Google Maps' });
+        const premiumDarkLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { maxZoom: 20, detectRetina: true, attribution: '&copy; CARTO' });
 
         const rainRadar = L.tileLayer(`https://tile.openweathermap.org/map/precipitation_new/{z}/{x}/{y}.png?appid=${WEATHER_API_KEY}`, { opacity: 0.7 });
         const cloudRadar = L.tileLayer(`https://tile.openweathermap.org/map/clouds_new/{z}/{x}/{y}.png?appid=${WEATHER_API_KEY}`, { opacity: 0.7 });
@@ -455,7 +451,6 @@
 
         map.on('click', function(e) { fetchBackendData(e.latlng.lat, e.latlng.lng); closeLayers(); });
 
-        // === GOOGLE MAPS STYLE AUTO-COMPLETE LOGIC ===
         let debounceTimer;
         const searchInput = document.getElementById('searchInput');
         const suggestionsBox = document.getElementById('search-suggestions');
@@ -469,7 +464,6 @@
                 return;
             }
 
-            // Wait 500ms after user stops typing to fetch suggestions
             debounceTimer = setTimeout(() => {
                 fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=5&addressdetails=1`)
                     .then(res => res.json())
@@ -478,7 +472,6 @@
                         if (data && data.length > 0) {
                             data.forEach(item => {
                                 const li = document.createElement('li');
-                                // Make the name look clean (max 3 parts)
                                 let displayNameParts = item.display_name.split(',').map(s => s.trim());
                                 let cleanName = displayNameParts.slice(0, 3).join(', ');
                                 
@@ -498,14 +491,12 @@
             }, 500); 
         });
 
-        // Hide suggestions if user clicks outside
         document.addEventListener('click', function(e) {
             if (!document.getElementById('search-wrapper').contains(e.target)) {
                 suggestionsBox.style.display = 'none';
             }
         });
 
-        // Search Fallback if user presses enter directly
         function searchCity() {
             let query = searchInput.value.trim();
             if (!query) return;
