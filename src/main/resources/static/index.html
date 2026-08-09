@@ -32,7 +32,7 @@
         #brand h1 { margin: 0; font-size: 0.95em; font-weight: 800; letter-spacing: 0.8px; color: #0f172a; }
         #brand h1 span { color: #2563eb; font-weight: 900; }
 
-        /* SEARCH WRAPPER & WIDGET (With Dropdown Support) */
+        /* SEARCH WRAPPER & WIDGET */
         #search-wrapper {
             position: absolute; top: 54px; left: 50%; transform: translateX(-50%); z-index: 1000;
             width: 100%; max-width: 380px; display: flex; flex-direction: column; align-items: center;
@@ -157,11 +157,7 @@
             #brand { top: 10px; padding: 4px 14px; }
             #brand h1 { font-size: 0.8em; }
 
-            /* Perfectly contained mobile search wrapper */
-            #search-wrapper { 
-                top: 52px; left: 12px; right: 12px; width: auto; 
-                transform: none; max-width: none;
-            }
+            #search-wrapper { top: 52px; left: 12px; right: 12px; width: auto; transform: none; max-width: none; }
             #search-widget { padding: 4px 6px 4px 14px; }
             #search-widget input { font-size: 16px; }
             .action-btn { padding: 6px 12px; font-size: 0.65em; margin-left: 6px; }
@@ -197,7 +193,7 @@
     <!-- WRAPPED SEARCH SYSTEM FOR AUTO-COMPLETE -->
     <div id="search-wrapper">
         <div id="search-widget">
-            <input type="text" id="searchInput" placeholder="Search city or village..." onkeypress="handleEnter(event)" autocomplete="off">
+            <input type="text" id="searchInput" placeholder="Search any city or village..." onkeypress="handleEnter(event)" autocomplete="off">
             <button class="gps-btn" onclick="locateMe()" title="Auto-Locate">📍</button>
             <button class="action-btn" onclick="searchCity()">Scan</button>
         </div>
@@ -211,16 +207,17 @@
         <div id="layer-panel">
             <div class="layer-panel-title">Map Type</div>
             <div class="layer-grid">
+                <!-- NOW USING DIRECT GOOGLE MAPS TILES FOR 100% A-Z DETAIL -->
                 <div class="layer-item active" id="item-light" onclick="switchLayer('light')">
-                    <div class="layer-thumb" style="background-image: url('https://a.basemaps.cartocdn.com/rastertiles/voyager/5/23/13.png');"></div>
+                    <div class="layer-thumb" style="background-image: url('https://mt1.google.com/vt/lyrs=m&x=13&y=23&z=5');"></div>
                     <span>Default</span>
                 </div>
                 <div class="layer-item" id="item-sat" onclick="switchLayer('sat')">
-                    <div class="layer-thumb" style="background-image: url('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/5/23/13');"></div>
+                    <div class="layer-thumb" style="background-image: url('https://mt1.google.com/vt/lyrs=y&x=13&y=23&z=5');"></div>
                     <span>Satellite</span>
                 </div>
                 <div class="layer-item" id="item-dark" onclick="switchLayer('dark')">
-                    <div class="layer-thumb" style="background-image: url('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/5/23/13');"></div>
+                    <div class="layer-thumb" style="background-image: url('https://a.basemaps.cartocdn.com/dark_all/5/13/23.png');"></div>
                     <span>Dark</span>
                 </div>
             </div>
@@ -310,13 +307,14 @@
         L.control.zoom({ position: 'topleft' }).addTo(map);
         L.control.scale({ position: 'bottomleft', imperial: false }).addTo(map);
         
-        const lightLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', { attribution: '&copy; CARTO' });
-        const darkBase = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}', { attribution: '&copy; Esri' });
-        const darkLabels = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}', { attribution: '&copy; Esri' });
-        const premiumDarkLayer = L.layerGroup([darkBase, darkLabels]);
-        const satImage = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { attribution: 'Tiles &copy; Esri' });
-        const satLabels = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}{r}.png', { attribution: '&copy; CARTO' });
-        const hybridSatLayer = L.layerGroup([satImage, satLabels]); 
+        // 1. EXACT GOOGLE MAPS (A to Z ALL VILLAGES/STREETS)
+        const lightLayer = L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', { maxZoom: 20, attribution: '&copy; Google Maps' });
+        
+        // 2. EXACT GOOGLE SATELLITE WITH LABELS
+        const hybridSatLayer = L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', { maxZoom: 20, attribution: '&copy; Google Maps' });
+        
+        // 3. DETAILED DARK MAP
+        const premiumDarkLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { maxZoom: 20, attribution: '&copy; CARTO' });
 
         const rainRadar = L.tileLayer(`https://tile.openweathermap.org/map/precipitation_new/{z}/{x}/{y}.png?appid=${WEATHER_API_KEY}`, { opacity: 0.7 });
         const cloudRadar = L.tileLayer(`https://tile.openweathermap.org/map/clouds_new/{z}/{x}/{y}.png?appid=${WEATHER_API_KEY}`, { opacity: 0.7 });
@@ -471,7 +469,7 @@
                 return;
             }
 
-            // Wait 500ms after user stops typing to fetch suggestions (prevents spamming API)
+            // Wait 500ms after user stops typing to fetch suggestions
             debounceTimer = setTimeout(() => {
                 fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=5&addressdetails=1`)
                     .then(res => res.json())
@@ -480,7 +478,7 @@
                         if (data && data.length > 0) {
                             data.forEach(item => {
                                 const li = document.createElement('li');
-                                // Make the name look clean (max 3 parts like "Noida, UP, India")
+                                // Make the name look clean (max 3 parts)
                                 let displayNameParts = item.display_name.split(',').map(s => s.trim());
                                 let cleanName = displayNameParts.slice(0, 3).join(', ');
                                 
@@ -500,20 +498,23 @@
             }, 500); 
         });
 
-        // Hide suggestions if user clicks anywhere outside the search box
+        // Hide suggestions if user clicks outside
         document.addEventListener('click', function(e) {
             if (!document.getElementById('search-wrapper').contains(e.target)) {
                 suggestionsBox.style.display = 'none';
             }
         });
 
-        // Search Fallback if user presses enter or scan without clicking suggestion
+        // Search Fallback if user presses enter directly
         function searchCity() {
-            const query = searchInput.value.trim();
+            let query = searchInput.value.trim();
             if (!query) return;
             suggestionsBox.style.display = 'none';
-            searchInput.placeholder = "Scanning Database...";
+            searchInput.placeholder = "Scanning Matrix...";
             
+            query = query.replace(/hariyana/gi, 'haryana');
+            query = query.replace(/khord/gi, 'khurd');
+
             fetch(`https://api.openweathermap.org/geo/1.0/direct?q=${encodeURIComponent(query)}&limit=1&appid=${WEATHER_API_KEY}`)
                 .then(res => res.json())
                 .then(data => {
@@ -526,7 +527,13 @@
                                 if (osmData && osmData.length > 0) {
                                     triggerLocation(parseFloat(osmData[0].lat), parseFloat(osmData[0].lon), searchInput);
                                 } else {
-                                    showError(searchInput);
+                                    let fallbackQuery = query + ", India";
+                                    fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(fallbackQuery)}&limit=1`)
+                                        .then(fbRes => fbRes.json())
+                                        .then(fbData => {
+                                            if (fbData && fbData.length > 0) triggerLocation(parseFloat(fbData[0].lat), parseFloat(fbData[0].lon), searchInput);
+                                            else showError(searchInput);
+                                        }).catch(() => showError(searchInput));
                                 }
                             }).catch(() => showError(searchInput));
                     }
@@ -536,15 +543,15 @@
         function triggerLocation(lat, lon, inputEl) {
             map.flyTo([lat, lon], 12, { animate: true, duration: 1.5 });
             fetchBackendData(lat, lon);
-            inputEl.placeholder = "Search city or village...";
+            inputEl.placeholder = "Search any city or village...";
             inputEl.value = ""; 
             inputEl.blur();
         }
 
         function showError(input) {
             input.value = ""; 
-            input.placeholder = "❌ Target not found!";
-            setTimeout(() => input.placeholder = "Search city or village...", 3000);
+            input.placeholder = "❌ Location not found!";
+            setTimeout(() => input.placeholder = "Search any city or village...", 3000);
         }
 
         window.onload = () => {
@@ -569,9 +576,9 @@
                     (position) => {
                         const lat = position.coords.latitude; const lon = position.coords.longitude;
                         map.flyTo([lat, lon], 12, { animate: true, duration: 1.5 }); fetchBackendData(lat, lon);
-                        searchInput.placeholder = "Search city or village...";
+                        searchInput.placeholder = "Search any city or village...";
                     },
-                    (error) => { searchInput.placeholder = "❌ GPS Denied!"; setTimeout(() => searchInput.placeholder = "Search city or village...", 3000); }
+                    (error) => { searchInput.placeholder = "❌ GPS Denied!"; setTimeout(() => searchInput.placeholder = "Search any city or village...", 3000); }
                 );
             }
         }
