@@ -63,12 +63,12 @@
         .main-layer-btn:hover { background: #fff; transform: scale(1.05); box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
         .main-layer-btn svg { width: 22px; height: 22px; fill: #4b5563; }
         
-        /* The Panel containing thumbnail options */
+        /* The Panel containing thumbnail options and radar */
         #layer-panel {
-            position: absolute; bottom: 0; left: 60px; /* Slides out to the right */
+            position: absolute; bottom: 0; left: 60px;
             background: rgba(255, 255, 255, 0.92); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
             padding: 16px; border-radius: 20px; box-shadow: 0 15px 40px rgba(0,0,0,0.15);
-            border: 1px solid rgba(255,255,255,0.8); width: 270px;
+            border: 1px solid rgba(255,255,255,0.8); width: 280px;
             opacity: 0; pointer-events: none; transform: translateX(-15px) scale(0.95);
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             transform-origin: left bottom;
@@ -76,7 +76,7 @@
         #layer-panel.show { opacity: 1; pointer-events: auto; transform: translateX(0) scale(1); }
         
         .layer-panel-title { font-size: 0.75em; font-weight: 800; color: #111827; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px; }
-        .layer-grid { display: flex; gap: 10px; justify-content: space-between; }
+        .layer-grid { display: flex; gap: 10px; justify-content: space-between; margin-bottom: 15px; }
         
         .layer-item { display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer; flex: 1; }
         .layer-thumb { 
@@ -87,15 +87,23 @@
         .layer-item span { font-size: 0.7em; font-weight: 700; color: #6b7280; transition: color 0.2s; }
         .layer-item.active span { color: #2563eb; }
 
-        /* HUD CARD */
+        /* Live Radar Toggles */
+        .radar-controls { border-top: 1px solid #e5e7eb; padding-top: 12px; display: flex; flex-direction: column; gap: 8px; }
+        .radar-toggle { display: flex; justify-content: space-between; align-items: center; font-size: 0.8em; font-weight: 700; color: #374151; cursor: pointer; }
+        .toggle-switch { width: 36px; height: 20px; background: #d1d5db; border-radius: 20px; position: relative; transition: 0.3s; }
+        .toggle-switch::after { content: ''; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; background: white; border-radius: 50%; transition: 0.3s; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        .radar-toggle.active .toggle-switch { background: #2563eb; }
+        .radar-toggle.active .toggle-switch::after { transform: translateX(16px); }
+
+        /* HUD CARD - Expanded for more data */
         #data-hud {
-            position: fixed; bottom: 20px; right: 20px; width: 280px; z-index: 1000;
+            position: fixed; bottom: 20px; right: 20px; width: 310px; z-index: 1000;
             background: rgba(255, 255, 255, 0.94); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
-            border: 1px solid rgba(255, 255, 255, 1); border-radius: 18px; padding: 16px 18px; 
+            border: 1px solid rgba(255, 255, 255, 1); border-radius: 18px; padding: 18px 20px; 
             box-shadow: 0 15px 40px rgba(0,0,0,0.12);
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .hud-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; cursor: pointer; }
+        .hud-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; cursor: pointer; }
         .section-title { font-size: 0.65em; color: #2563eb; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; margin: 0; display: flex; align-items: center; gap: 8px; flex: 1; }
         .section-title::after { content: ""; flex: 1; height: 1.5px; background: #e5e7eb; border-radius: 2px; margin-left: 8px; }
         
@@ -104,41 +112,43 @@
         .minimize-btn { background: #f3f4f6; border: none; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-size: 0.7em; cursor: pointer; color: #2563eb; font-weight: bold; transition: background 0.2s; }
         .minimize-btn:hover { background: #e5e7eb; }
 
-        .hud-section { margin-bottom: 12px; }
+        .hud-section { margin-bottom: 14px; }
         .hud-section:last-child { margin-bottom: 0; }
         
-        .weather-display { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid #e5e7eb; }
-        #w-icon { font-size: 2.2em; line-height: 1; }
+        .weather-display { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; padding-bottom: 12px; border-bottom: 1px solid #e5e7eb; }
+        .weather-main { display: flex; align-items: center; gap: 12px; }
+        #w-icon { font-size: 2.6em; line-height: 1; }
         .temp-info { display: flex; flex-direction: column; }
-        #w-temp { font-size: 1.6em; font-weight: 800; color: #111827; line-height: 1; margin-bottom: 3px; }
+        #w-temp { font-size: 1.8em; font-weight: 800; color: #111827; line-height: 1; margin-bottom: 3px; }
         #w-cond { font-size: 0.8em; color: #4b5563; font-weight: 600; }
+        #w-feels { font-size: 0.7em; font-weight: 700; color: #ef4444; background: rgba(239, 68, 68, 0.1); padding: 3px 8px; border-radius: 10px; text-align: center; }
         
-        .data-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .data-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .data-item span { display: block; font-size: 0.55em; color: #6b7280; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 2px; font-weight: 700; }
         .data-item strong { display: block; font-size: 0.85em; font-weight: 700; color: #1f2937; word-break: break-word; }
         
         #data-hud.collapsed .hud-content-body { display: none; }
         #data-hud.collapsed .section-title { display: none; }
         #data-hud.collapsed .min-summary { display: flex; }
-        #data-hud.collapsed { padding: 10px 14px; width: auto; max-width: 220px; }
+        #data-hud.collapsed { padding: 10px 16px; width: auto; max-width: 240px; }
 
-        .pulse-marker-hot { width: 14px; height: 14px; border-radius: 50%; border: 2.5px solid #fff; background: #ef4444; animation: pulseHot 1.5s infinite; }
+        /* Dynamic Pulses */
+        .pulse-marker-hot { width: 16px; height: 16px; border-radius: 50%; border: 2.5px solid #fff; background: #ef4444; animation: pulseHot 1.5s infinite; }
         @keyframes pulseHot { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
         
-        .pulse-marker-rain { width: 14px; height: 14px; border-radius: 50%; border: 2.5px solid #fff; background: #3b82f6; animation: pulseRain 1.5s infinite; }
+        .pulse-marker-rain { width: 16px; height: 16px; border-radius: 50%; border: 2.5px solid #fff; background: #3b82f6; animation: pulseRain 1.5s infinite; }
         @keyframes pulseRain { 0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(59, 130, 246, 0); } 100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); } }
         
-        .pulse-marker-cold { width: 14px; height: 14px; border-radius: 50%; border: 2.5px solid #fff; background: #06b6d4; animation: pulseCold 1.5s infinite; }
+        .pulse-marker-cold { width: 16px; height: 16px; border-radius: 50%; border: 2.5px solid #fff; background: #06b6d4; animation: pulseCold 1.5s infinite; }
         @keyframes pulseCold { 0% { box-shadow: 0 0 0 0 rgba(6, 182, 212, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(6, 182, 212, 0); } 100% { box-shadow: 0 0 0 0 rgba(6, 182, 212, 0); } }
         
-        .pulse-marker-pleasant { width: 14px; height: 14px; border-radius: 50%; border: 2.5px solid #fff; background: #10b981; animation: pulsePleasant 1.5s infinite; }
+        .pulse-marker-pleasant { width: 16px; height: 16px; border-radius: 50%; border: 2.5px solid #fff; background: #10b981; animation: pulsePleasant 1.5s infinite; }
         @keyframes pulsePleasant { 0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(16, 185, 129, 0); } 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); } }
 
         .leaflet-popup-content-wrapper { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-radius: 10px; box-shadow: 0 8px 25px rgba(0,0,0,0.15); padding: 2px; }
         .leaflet-popup-tip { background: rgba(255, 255, 255, 0.95); }
         .custom-popup-content { font-family: 'Segoe UI', sans-serif; font-size: 0.85em; font-weight: 700; color: #111827; padding: 4px 8px; display: flex; align-items: center; gap: 6px; }
 
-        /* Make Leaflet UI look cleaner */
         .leaflet-control-zoom { border: none !important; margin-top: 110px !important; margin-left: 20px !important; box-shadow: 0 8px 25px rgba(0,0,0,0.1) !important; border-radius: 12px !important; overflow: hidden; }
         .leaflet-control-zoom a { background-color: rgba(255, 255, 255, 0.95) !important; color: #111 !important; border-color: rgba(0,0,0,0.05) !important; width: 32px !important; height: 32px !important; line-height: 32px !important; }
         .leaflet-control-scale { margin-left: 20px !important; margin-bottom: 25px !important; }
@@ -149,32 +159,29 @@
 
             #search-widget { 
                 top: 52px; left: 12px; right: 12px; width: auto; 
-                transform: none; max-width: none;
-                padding: 4px 6px 4px 14px; display: flex;
+                transform: none; max-width: none; padding: 4px 6px 4px 14px; display: flex;
             }
             #search-widget input { flex: 1; width: 100%; font-size: 16px; }
             .action-btn { padding: 6px 12px; font-size: 0.65em; flex-shrink: 0; margin-left: 6px; }
             .gps-btn { width: 30px; height: 30px; font-size: 0.8em; flex-shrink: 0; margin-right: 4px; }
 
-            /* Mobile Layers Positioning */
             #layer-controls-wrapper { top: 105px; left: 12px; bottom: auto; }
             .main-layer-btn { width: 40px; height: 40px; }
             .main-layer-btn svg { width: 20px; height: 20px; }
-            #layer-panel { top: 0; left: 50px; bottom: auto; width: 230px; padding: 12px; transform-origin: left top; transform: translateX(-15px) scale(0.95); }
+            #layer-panel { top: 0; left: 50px; bottom: auto; width: 240px; padding: 14px; transform-origin: left top; transform: translateX(-15px) scale(0.95); }
             
             #data-hud { 
                 bottom: 12px; right: 12px; left: 12px; width: auto; 
-                max-height: 38dvh; overflow-y: auto; padding: 12px 14px; border-radius: 14px; 
+                max-height: 40dvh; overflow-y: auto; padding: 14px; border-radius: 16px; 
             }
-            .weather-display { margin-bottom: 6px; padding-bottom: 6px; gap: 10px; }
-            #w-icon { font-size: 1.6em; }
-            #w-temp { font-size: 1.2em; }
-            .hud-section { margin-bottom: 6px; }
-            .section-title { font-size: 0.6em; margin-bottom: 4px; }
+            .weather-display { margin-bottom: 8px; padding-bottom: 8px; }
+            #w-icon { font-size: 2em; }
+            #w-temp { font-size: 1.4em; }
+            #w-feels { font-size: 0.65em; }
+            .hud-section { margin-bottom: 8px; }
             .data-item span { font-size: 0.5em; }
-            .data-item strong { font-size: 0.85em; }
+            .data-item strong { font-size: 0.8em; }
             
-            /* Hide Leaflet controls on mobile to save space */
             .leaflet-control-zoom, .leaflet-control-scale { display: none !important; }
         }
     </style>
@@ -193,36 +200,44 @@
         <button class="action-btn" onclick="searchCity()">Scan</button>
     </div>
 
-    <!-- GOOGLE MAPS STYLE VISUAL LAYER MENU -->
+    <!-- PRO VISUAL LAYER MENU WITH LIVE RADAR -->
     <div id="layer-controls-wrapper" onmouseleave="closeLayers()">
-        <!-- Layer Icon Button -->
         <div class="main-layer-btn" onclick="toggleLayers()" title="Map Details">
             <svg viewBox="0 0 24 24"><path d="M11.99 2 2.5 7l9.49 5 9.51-5zM2.5 12l9.49 5 9.51-5M2.5 17l9.49 5 9.51-5"/></svg>
         </div>
         
-        <!-- Expanded Panel with Thumbnails -->
         <div id="layer-panel">
             <div class="layer-panel-title">Map Type</div>
             <div class="layer-grid">
                 <div class="layer-item active" id="item-light" onclick="switchLayer('light')">
-                    <!-- Default Map Image CSS background -->
                     <div class="layer-thumb" style="background-image: url('https://a.basemaps.cartocdn.com/rastertiles/voyager/5/23/13.png');"></div>
                     <span>Default</span>
                 </div>
                 <div class="layer-item" id="item-sat" onclick="switchLayer('sat')">
-                    <!-- Satellite Map Image CSS background -->
                     <div class="layer-thumb" style="background-image: url('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/5/23/13');"></div>
                     <span>Satellite</span>
                 </div>
                 <div class="layer-item" id="item-dark" onclick="switchLayer('dark')">
-                    <!-- Dark Map Image CSS background -->
                     <div class="layer-thumb" style="background-image: url('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/5/23/13');"></div>
                     <span>Dark</span>
+                </div>
+            </div>
+            
+            <div class="layer-panel-title" style="margin-top: 15px; margin-bottom: 8px;">Live Overlays</div>
+            <div class="radar-controls">
+                <div class="radar-toggle" id="radar-rain" onclick="toggleRadar('rain')">
+                    <span>🌧️ Rain Radar</span>
+                    <div class="toggle-switch"></div>
+                </div>
+                <div class="radar-toggle" id="radar-cloud" onclick="toggleRadar('clouds')">
+                    <span>☁️ Cloud Cover</span>
+                    <div class="toggle-switch"></div>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- ADVANCED HUD CARD -->
     <div id="data-hud">
         <div class="hud-header" onclick="toggleHud()">
             <div class="section-title">Atmospheric Data</div>
@@ -234,11 +249,14 @@
         <div class="hud-content-body">
             <div class="hud-section" id="weather-section">
                 <div class="weather-display">
-                    <div id="w-icon">🌍</div>
-                    <div class="temp-info">
-                        <span id="w-temp">--°C</span>
-                        <span id="w-cond">Awaiting data...</span>
+                    <div class="weather-main">
+                        <div id="w-icon">🌍</div>
+                        <div class="temp-info">
+                            <span id="w-temp">--°C</span>
+                            <span id="w-cond">Awaiting data...</span>
+                        </div>
                     </div>
+                    <div id="w-feels">Feels --°C</div>
                 </div>
                 <div class="data-grid">
                     <div class="data-item">
@@ -246,13 +264,21 @@
                         <strong id="w-loc">--</strong>
                     </div>
                     <div class="data-item">
+                        <span>Wind Speed</span>
+                        <strong id="w-wind">-- km/h</strong>
+                    </div>
+                    <div class="data-item">
                         <span>Humidity</span>
                         <strong id="w-hum">--</strong>
+                    </div>
+                    <div class="data-item">
+                        <span>Pressure</span>
+                        <strong id="w-pres">-- hPa</strong>
                     </div>
                 </div>
             </div>
             <div class="hud-section" id="time-section">
-                <div class="section-title" style="margin-bottom: 6px;">Temporal Sync</div>
+                <div class="section-title" style="margin-bottom: 8px;">Temporal Sync</div>
                 <div class="data-grid">
                     <div class="data-item">
                         <span>Local Time</span>
@@ -262,6 +288,14 @@
                         <span>Date</span>
                         <strong id="t-date">--</strong>
                     </div>
+                    <div class="data-item">
+                        <span>Sunrise</span>
+                        <strong id="t-sunrise">--</strong>
+                    </div>
+                    <div class="data-item">
+                        <span>Sunset</span>
+                        <strong id="t-sunset">--</strong>
+                    </div>
                 </div>
             </div>
         </div>
@@ -269,8 +303,9 @@
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
-        // Added Zoom control to top left and Map scale
-        const map = L.map('map', { zoomControl: false, minZoom: 2, maxBounds: [[-90, -180], [90, 180]] }).setView([22, 79], 4);
+        const WEATHER_API_KEY = "b91ed340d9e7869a4d0859f4ef892483"; 
+        
+        const map = L.map('map', { zoomControl: false, minZoom: 3, maxBounds: [[-90, -180], [90, 180]] }).setView([22, 79], 4);
         L.control.zoom({ position: 'topleft' }).addTo(map);
         L.control.scale({ position: 'bottomleft', imperial: false }).addTo(map);
         
@@ -282,20 +317,20 @@
         const satLabels = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}{r}.png', { attribution: '&copy; CARTO' });
         const hybridSatLayer = L.layerGroup([satImage, satLabels]); 
 
+        // LIVE WEATHER RADAR LAYERS
+        const rainRadar = L.tileLayer(`https://tile.openweathermap.org/map/precipitation_new/{z}/{x}/{y}.png?appid=${WEATHER_API_KEY}`, { opacity: 0.7 });
+        const cloudRadar = L.tileLayer(`https://tile.openweathermap.org/map/clouds_new/{z}/{x}/{y}.png?appid=${WEATHER_API_KEY}`, { opacity: 0.7 });
+
         lightLayer.addTo(map);
         
-        // --- PRO LAYER SWITCHER LOGIC ---
-        function toggleLayers() {
-            document.getElementById('layer-panel').classList.toggle('show');
-        }
-        function closeLayers() {
-            document.getElementById('layer-panel').classList.remove('show');
-        }
+        let activeRadar = { rain: false, clouds: false };
+
+        function toggleLayers() { document.getElementById('layer-panel').classList.toggle('show'); }
+        function closeLayers() { document.getElementById('layer-panel').classList.remove('show'); }
 
         function switchLayer(layerType) {
             map.removeLayer(lightLayer); map.removeLayer(premiumDarkLayer); map.removeLayer(hybridSatLayer);
             
-            // Remove active classes from all items
             document.getElementById('item-light').classList.remove('active'); 
             document.getElementById('item-dark').classList.remove('active'); 
             document.getElementById('item-sat').classList.remove('active');
@@ -306,6 +341,24 @@
             
             closeLayers();
             if(currentPin) { map.removeLayer(currentPin); currentPin.addTo(map); }
+            
+            // Re-apply active radars on top
+            if(activeRadar.rain) rainRadar.bringToFront();
+            if(activeRadar.clouds) cloudRadar.bringToFront();
+        }
+
+        function toggleRadar(type) {
+            const btn = document.getElementById(type === 'rain' ? 'radar-rain' : 'radar-cloud');
+            const layer = type === 'rain' ? rainRadar : cloudRadar;
+            
+            activeRadar[type] = !activeRadar[type];
+            if(activeRadar[type]) {
+                layer.addTo(map);
+                btn.classList.add('active');
+            } else {
+                map.removeLayer(layer);
+                btn.classList.remove('active');
+            }
         }
 
         let currentPin = null;
@@ -314,11 +367,7 @@
             const hud = document.getElementById('data-hud');
             const icon = document.getElementById('minimizeIcon');
             hud.classList.toggle('collapsed');
-            if (hud.classList.contains('collapsed')) {
-                icon.innerText = '▲';
-            } else {
-                icon.innerText = '▼';
-            }
+            icon.innerText = hud.classList.contains('collapsed') ? '▲' : '▼';
         }
 
         function expandHud() {
@@ -342,6 +391,13 @@
                 else if (temp <= 10) { markerClass = 'pulse-marker-cold'; }
             }
             return { icon, markerClass };
+        }
+
+        // Format unix timestamp to local time string based on timezone offset
+        function formatSunTime(unixTime, timezoneOffset) {
+            if (!unixTime) return "--";
+            const date = new Date((unixTime + timezoneOffset) * 1000);
+            return date.toLocaleTimeString('en-US', { timeZone: 'UTC', hour: '2-digit', minute: '2-digit', hour12: true });
         }
 
         function fetchBackendData(lat, lon) {
@@ -377,20 +433,32 @@
 
                     if (data.weather && data.weather.weather) {
                         const temp = Math.round(data.weather.main.temp);
+                        const feelsLike = Math.round(data.weather.main.feels_like);
                         const desc = data.weather.weather[0].description.toLowerCase();
                         const visuals = getWeatherVisuals(desc, temp);
+                        const windKmh = Math.round(data.weather.wind.speed * 3.6); // m/s to km/h
+                        const tzOffset = data.weather.timezone || 0;
 
                         document.getElementById('w-temp').innerText = temp + "°C";
+                        document.getElementById('w-feels').innerText = "Feels " + feelsLike + "°C";
                         document.getElementById('w-cond').innerText = desc.replace(/\b\w/g, l => l.toUpperCase());
                         document.getElementById('w-hum').innerText = data.weather.main.humidity + "%";
+                        document.getElementById('w-wind').innerText = windKmh + " km/h";
+                        document.getElementById('w-pres').innerText = data.weather.main.pressure + " hPa";
                         document.getElementById('w-icon').innerText = visuals.icon;
+
+                        // Calculate exact local sunrise/sunset
+                        if(data.weather.sys) {
+                            document.getElementById('t-sunrise').innerText = formatSunTime(data.weather.sys.sunrise, tzOffset);
+                            document.getElementById('t-sunset').innerText = formatSunTime(data.weather.sys.sunset, tzOffset);
+                        }
 
                         document.getElementById('min-icon').innerText = visuals.icon;
                         document.getElementById('min-temp').innerText = temp + "°C";
                         document.getElementById('min-loc').innerText = shortCity;
 
                         if (currentPin) map.removeLayer(currentPin);
-                        const customPinIcon = L.divIcon({ className: visuals.markerClass, iconSize: [14, 14], iconAnchor: [7, 7] });
+                        const customPinIcon = L.divIcon({ className: visuals.markerClass, iconSize: [16, 16], iconAnchor: [8, 8] });
                         
                         const popupContent = `<div class="custom-popup-content">${visuals.icon} <span>${locName} • ${temp}°C</span></div>`;
                         
@@ -416,8 +484,7 @@
             if (!query) return;
             searchInput.placeholder = "Searching...";
             
-            const apiKey = "b91ed340d9e7869a4d0859f4ef892483"; 
-            fetch(`https://api.openweathermap.org/geo/1.0/direct?q=${encodeURIComponent(query)}&limit=1&appid=${apiKey}`)
+            fetch(`https://api.openweathermap.org/geo/1.0/direct?q=${encodeURIComponent(query)}&limit=1&appid=${WEATHER_API_KEY}`)
                 .then(res => res.json())
                 .then(data => {
                     if (data && data.length > 0) {
@@ -445,16 +512,12 @@
                         const lon = position.coords.longitude;
                         map.flyTo([lat, lon], 12, { animate: true, duration: 2.5 });
                         fetchBackendData(lat, lon);
-                        searchInput.placeholder = "Search city...";
                     },
                     (error) => { 
                         map.flyTo([28.6139, 77.2090], 10, { animate: true, duration: 1.5 });
                         fetchBackendData(28.6139, 77.2090); 
-                        searchInput.placeholder = "Search city..."; 
                     }
                 );
-            } else {
-                searchInput.placeholder = "Search city...";
             }
         };
 
