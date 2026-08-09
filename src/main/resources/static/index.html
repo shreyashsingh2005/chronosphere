@@ -19,18 +19,18 @@
         
         #map { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 1; }
         
-        /* REFINED PREMIUM BRANDING (Clean & Professional) */
+        /* PREMIUM CLEAN LOGO STYLING */
         #brand { 
             position: absolute; top: 25px; left: 25px; z-index: 1000; pointer-events: none; 
             background: rgba(255, 255, 255, 0.88); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
-            padding: 12px 22px; border-radius: 16px;
+            padding: 10px 20px; border-radius: 14px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.08);
             border: 1px solid rgba(255,255,255,0.8);
             display: flex; flex-direction: column; align-items: flex-start;
         }
-        #brand h1 { margin: 0; font-size: 1.3em; font-weight: 800; letter-spacing: 0.5px; color: #0f172a; }
-        #brand h1 span { color: #2563eb; }
-        #brand p { margin: 3px 0 0 0px; font-size: 0.55em; color: #64748b; letter-spacing: 2.5px; text-transform: uppercase; font-weight: 700; }
+        #brand h1 { margin: 0; font-size: 1.25em; font-weight: 800; letter-spacing: 0.8px; color: #0f172a; }
+        #brand h1 span { color: #2563eb; font-weight: 900; }
+        #brand p { margin: 2px 0 0 0px; font-size: 0.5em; color: #64748b; letter-spacing: 2px; text-transform: uppercase; font-weight: 700; }
 
         /* Search Widget */
         #search-widget {
@@ -66,41 +66,41 @@
         .layer-btn:hover { background: rgba(0,0,0,0.05); filter: grayscale(0%); opacity: 1; transform: scale(1.1); }
         .layer-btn.active { background: #fff; filter: grayscale(0%); opacity: 1; box-shadow: 0 5px 15px rgba(0,0,0,0.1); transform: scale(1.05); }
 
-        /* Premium Glass HUD */
+        /* COMPACT & SLEEK HUD CARD */
         #data-hud {
-            position: absolute; bottom: 35px; right: 35px; width: 330px; z-index: 1000;
-            background: rgba(255, 255, 255, 0.92); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
-            border: 1px solid rgba(255, 255, 255, 1); border-radius: 24px; padding: 25px 25px; 
-            box-shadow: 0 20px 50px rgba(0,0,0,0.12), inset 0 0 0 1px rgba(255,255,255,0.5);
+            position: absolute; bottom: 30px; right: 30px; width: 310px; z-index: 1000;
+            background: rgba(255, 255, 255, 0.93); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
+            border: 1px solid rgba(255, 255, 255, 1); border-radius: 20px; padding: 20px 22px; 
+            box-shadow: 0 15px 40px rgba(0,0,0,0.1), inset 0 0 0 1px rgba(255,255,255,0.6);
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .hud-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; cursor: pointer; }
-        .section-title { font-size: 0.75em; color: #2563eb; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; margin: 0; display: flex; align-items: center; gap: 10px; flex: 1; }
-        .section-title::after { content: ""; flex: 1; height: 1.5px; background: #e5e7eb; border-radius: 2px; margin-left: 10px; }
+        .hud-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; cursor: pointer; }
+        .section-title { font-size: 0.7em; color: #2563eb; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; margin: 0; display: flex; align-items: center; gap: 8px; flex: 1; }
+        .section-title::after { content: ""; flex: 1; height: 1.5px; background: #e5e7eb; border-radius: 2px; margin-left: 8px; }
         
-        .min-summary { display: none; font-size: 0.9em; font-weight: 700; color: #111827; align-items: center; gap: 8px; }
+        .min-summary { display: none; font-size: 0.85em; font-weight: 700; color: #111827; align-items: center; gap: 8px; }
         
-        .minimize-btn { background: #f3f4f6; border: none; border-radius: 50%; width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; font-size: 0.8em; cursor: pointer; color: #2563eb; font-weight: bold; transition: background 0.2s; }
+        .minimize-btn { background: #f3f4f6; border: none; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-size: 0.75em; cursor: pointer; color: #2563eb; font-weight: bold; transition: background 0.2s; }
         .minimize-btn:hover { background: #e5e7eb; }
 
-        .hud-section { margin-bottom: 20px; transition: opacity 0.3s ease; }
+        .hud-section { margin-bottom: 15px; transition: opacity 0.3s ease; }
         .hud-section:last-child { margin-bottom: 0; }
         
-        .weather-display { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #e5e7eb; }
-        #w-icon { font-size: 2.8em; line-height: 1; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.15)); }
+        .weather-display { display: flex; align-items: center; gap: 15px; margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid #e5e7eb; }
+        #w-icon { font-size: 2.4em; line-height: 1; filter: drop-shadow(0 3px 6px rgba(0,0,0,0.12)); }
         .temp-info { display: flex; flex-direction: column; }
-        #w-temp { font-size: 2em; font-weight: 800; color: #111827; line-height: 1; margin-bottom: 4px; }
-        #w-cond { font-size: 0.95em; color: #4b5563; font-weight: 600; }
+        #w-temp { font-size: 1.8em; font-weight: 800; color: #111827; line-height: 1; margin-bottom: 3px; }
+        #w-cond { font-size: 0.9em; color: #4b5563; font-weight: 600; }
         
-        .data-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .data-item span { display: block; font-size: 0.65em; color: #6b7280; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px; font-weight: 700; }
-        .data-item strong { display: block; font-size: 1em; font-weight: 700; color: #1f2937; }
+        .data-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .data-item span { display: block; font-size: 0.6em; color: #6b7280; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 2px; font-weight: 700; }
+        .data-item strong { display: block; font-size: 0.95em; font-weight: 700; color: #1f2937; }
         
         /* Collapsed State Styling */
         #data-hud.collapsed .hud-content-body { display: none; }
         #data-hud.collapsed .section-title { display: none; }
         #data-hud.collapsed .min-summary { display: flex; }
-        #data-hud.collapsed { padding: 12px 18px; width: auto; max-width: 260px; }
+        #data-hud.collapsed { padding: 10px 16px; width: auto; max-width: 240px; }
 
         /* Smart Pins */
         .pulse-marker-hot { width: 14px; height: 14px; border-radius: 50%; border: 2.5px solid #fff; background: #ef4444; animation: pulseHot 1.5s infinite; }
@@ -125,31 +125,31 @@
 
         /* --- MOBILE RESPONSIVE STYLES --- */
         @media (max-width: 768px) {
-            #brand { top: 12px; left: 12px; padding: 8px 14px; }
-            #brand h1 { font-size: 0.95em; }
+            #brand { top: 12px; left: 12px; padding: 8px 14px; border-radius: 12px; }
+            #brand h1 { font-size: 0.9em; }
             #brand p { font-size: 0.45em; }
 
             #search-widget { 
-                top: 72px; left: 50%; transform: translateX(-50%);
+                top: 70px; left: 50%; transform: translateX(-50%);
                 width: 90%; max-width: 320px; padding: 4px 4px 4px 14px; 
             }
             #search-widget input { width: 120px; font-size: 0.8em; }
             .action-btn { padding: 7px 12px; font-size: 0.7em; }
 
             #layer-controls { 
-                top: 135px; left: 12px; bottom: auto;
-                flex-direction: row; padding: 5px; gap: 6px;
+                top: 132px; left: 12px; bottom: auto;
+                flex-direction: row; padding: 5px; gap: 6px; border-radius: 16px;
             }
             .layer-btn { width: 34px; height: 34px; font-size: 0.95em; }
 
             #data-hud { 
                 bottom: 12px; right: 12px; left: 12px; 
-                width: auto; padding: 14px 15px; border-radius: 18px; 
+                width: auto; padding: 12px 15px; border-radius: 16px; 
             }
-            .weather-display { margin-bottom: 10px; padding-bottom: 10px; gap: 12px; }
-            #w-icon { font-size: 2.2em; }
-            #w-temp { font-size: 1.5em; }
-            .hud-section { margin-bottom: 10px; }
+            .weather-display { margin-bottom: 8px; padding-bottom: 8px; gap: 12px; }
+            #w-icon { font-size: 2em; }
+            #w-temp { font-size: 1.4em; }
+            .hud-section { margin-bottom: 8px; }
         }
     </style>
 </head>
@@ -159,8 +159,8 @@
     
     <!-- Clean & Professional Branding -->
     <div id="brand">
-        <h1>Chr<span>⚛</span>noSphere</h1>
-        <p>Atmospheric & Temporal Live</p>
+        <h1>Chrono<span>Sphere</span></h1>
+        <p>Atmospheric Network</p>
     </div>
 
     <div id="layer-controls">
@@ -204,7 +204,7 @@
                 </div>
             </div>
             <div class="hud-section" id="time-section">
-                <div class="section-title" style="margin-bottom: 8px;">Temporal Sync</div>
+                <div class="section-title" style="margin-bottom: 6px;">Temporal Sync</div>
                 <div class="data-grid">
                     <div class="data-item">
                         <span>Local Time</span>
