@@ -172,7 +172,7 @@
             
             #data-hud { 
                 bottom: 12px; right: 12px; left: 12px; width: auto; 
-                max-height: 40dvh; overflow-y: auto; padding: 14px; border-radius: 16px; 
+                max-height: 38dvh; overflow-y: auto; padding: 14px; border-radius: 16px; 
             }
             .weather-display { margin-bottom: 8px; padding-bottom: 8px; }
             #w-icon { font-size: 2em; }
@@ -195,7 +195,7 @@
     </div>
 
     <div id="search-widget">
-        <input type="text" id="searchInput" placeholder="Search city..." onkeypress="handleEnter(event)">
+        <input type="text" id="searchInput" placeholder="Search city or village..." onkeypress="handleEnter(event)">
         <button class="gps-btn" onclick="locateMe()" title="Auto-Locate">📍</button>
         <button class="action-btn" onclick="searchCity()">Scan</button>
     </div>
@@ -381,7 +381,6 @@
             return { icon, markerClass };
         }
 
-        // PERFECT LOCAL TIME CALCULATOR
         function getExactLocalTimeStr(serverTimeSec, offsetSec) {
             const localWallClockDate = new Date((serverTimeSec + offsetSec) * 1000);
             const tTime = localWallClockDate.toLocaleTimeString('en-US', { timeZone: 'UTC', hour: '2-digit', minute: '2-digit', hour12: true });
@@ -396,7 +395,6 @@
             document.getElementById('w-icon').innerText = "⏳";
             document.getElementById('w-rain-chance').innerText = "--%";
             
-            // 1. Fetch Current Weather & Exact Time
             fetch(`/api/data?lat=${lat}&lon=${lon}`)
                 .then(res => res.json())
                 .then(data => {
@@ -428,7 +426,7 @@
                         document.getElementById('t-date').innerText = accurateTime.tDate;
                         document.getElementById('t-time').innerText = accurateTime.tTime;
 
-                        // 2. Fetch Reverse Geocode for 100% Accurate City Name
+                        // Reverse Geocode for accurate place names
                         fetch(`https://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lon}&limit=1&appid=${WEATHER_API_KEY}`)
                             .then(geoRes => geoRes.json())
                             .then(geoData => {
@@ -452,12 +450,11 @@
                                 currentPin = L.marker([lat, lon], {icon: customPinIcon}).bindPopup(popupContent, { closeButton: false, offset: [0, -10], autoPan: false }).addTo(map);
                             });
 
-                        // 3. Fetch Forecast API for 100% Accurate Rain Chance (PoP)
+                        // Forecast API for exact Rain Chance
                         fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&cnt=2&appid=${WEATHER_API_KEY}`)
                             .then(fRes => fRes.json())
                             .then(fData => {
                                 if (fData && fData.list && fData.list.length > 0) {
-                                    // pop is a value between 0 and 1, we multiply by 100 for percentage
                                     const rainChancePercent = Math.round(fData.list[0].pop * 100);
                                     document.getElementById('w-rain-chance').innerText = rainChancePercent + "%";
                                 } else {
@@ -469,28 +466,52 @@
                 .catch(err => console.error("Error:", err));
         }
 
-        map.on('click', function(e) { fetchBackendData(e.latlng.lat, e.latlng.lng); closeLayers(); });
-
+        // SMART DUAL-ENGINE SEARCH
         function searchCity() {
             const searchInput = document.getElementById('searchInput');
             const query = searchInput.value.trim();
             if (!query) return;
-            searchInput.placeholder = "Searching...";
+            searchInput.placeholder = "Scanning Database...";
             
+            // Engine 1: OpenWeather (Best for Cities, States, Countries)
             fetch(`https://api.openweathermap.org/geo/1.0/direct?q=${encodeURIComponent(query)}&limit=1&appid=${WEATHER_API_KEY}`)
                 .then(res => res.json())
                 .then(data => {
                     if (data && data.length > 0) {
-                        const lat = parseFloat(data[0].lat); const lon = parseFloat(data[0].lon);
-                        map.flyTo([lat, lon], 10, { animate: true, duration: 1.5 });
-                        fetchBackendData(lat, lon);
-                        searchInput.placeholder = "Search city..."; searchInput.value = ""; searchInput.blur();
+                        triggerLocation(data[0].lat, data[0].lon);
                     } else {
-                        searchInput.value = ""; searchInput.placeholder = "❌ Not found!";
-                        setTimeout(() => searchInput.placeholder = "Search city...", 3000);
+                        // Engine 2: OpenStreetMap Fallback (Best for Villages like Noida Khord & Typos)
+                        fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=1`)
+                            .then(osmRes => osmRes.json())
+                            .then(osmData => {
+                                if (osmData && osmData.length > 0) {
+                                    triggerLocation(parseFloat(osmData[0].lat), parseFloat(osmData[0].lon));
+                                } else {
+                                    searchInput.value = ""; 
+                                    searchInput.placeholder = "❌ Target not found!";
+                                    setTimeout(() => searchInput.placeholder = "Search city or village...", 3000);
+                                }
+                            }).catch(() => showError(searchInput));
                     }
-                }).catch(err => console.error(err));
+                }).catch(() => showError(searchInput));
         }
+
+        function triggerLocation(lat, lon) {
+            const searchInput = document.getElementById('searchInput');
+            map.flyTo([lat, lon], 12, { animate: true, duration: 1.5 });
+            fetchBackendData(lat, lon);
+            searchInput.placeholder = "Search city or village...";
+            searchInput.value = ""; 
+            searchInput.blur();
+        }
+
+        function showError(input) {
+            input.value = ""; 
+            input.placeholder = "❌ Network Error!";
+            setTimeout(() => input.placeholder = "Search city or village...", 3000);
+        }
+
+        map.on('click', function(e) { fetchBackendData(e.latlng.lat, e.latlng.lng); closeLayers(); });
 
         window.onload = () => {
             const searchInput = document.getElementById('searchInput');
@@ -515,9 +536,9 @@
                     (position) => {
                         const lat = position.coords.latitude; const lon = position.coords.longitude;
                         map.flyTo([lat, lon], 12, { animate: true, duration: 1.5 }); fetchBackendData(lat, lon);
-                        searchInput.placeholder = "Search city...";
+                        searchInput.placeholder = "Search city or village...";
                     },
-                    (error) => { searchInput.placeholder = "❌ GPS Denied!"; setTimeout(() => searchInput.placeholder = "Search city...", 3000); }
+                    (error) => { searchInput.placeholder = "❌ GPS Denied!"; setTimeout(() => searchInput.placeholder = "Search city or village...", 3000); }
                 );
             }
         }
